@@ -9,20 +9,20 @@ Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)
 - 划分数据集，并将图像进行``ANTIALIAS``处理并resize成``3x224x224``，并生成word map  
 	
 ### dataloader.py  
-- 获取DataLoader  
+- 获取``DataLoader``  
 
 ### model.py  
 - 模型总览  
 	采用Encoder-Decoder架构和跨模态Attention机制  
 
 - **Encoder**: ``VGG19``  
-	1. 使用torchvision.models中在ImageNet上预训练好的模型  
-	2. 去除FC层和最后一个maxpool层，即输出为``14x14x512``的特征图  
+	1. 使用``torchvision.models``中在``ImageNet``上预训练好的模型  
+	2. 去除``fc``层和最后一个``maxpool``层，即输出为``14x14x512``的特征图  
   
 - **Decoder**: ``LSTM``  
-	1. h0和c0利用encoder输出的特征图初始化  
-	2. word embedding层与fc层均初始化，且不使用预训练词向量如GloVe  
-	3. 采用dropout避免过拟合  
+	1. ``h0``和``c0``利用encoder输出的特征图初始化  
+	2. ``word embedding``层与``fc``层均初始化，且不使用预训练词向量如``GloVe``  
+	3. 采用``dropout``避免过拟合  
   
 - **Attention**: ``scaled dot-product attention``  （与论文中不同）
 	1. 利用hidden state经过fc层获得``Query``，feature map经过2个不同的fc层获得``Key``和``Value``，  
@@ -32,7 +32,7 @@ Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)
 	3. 将``Value``的每个pixel的所有channel都乘上该pixel对应的score，再经过``residual``层加上原始的``encoder_out``，然后对每个channel求和，得到最终的图像表示  
 	4. 最后将``word embedding``与此向量``concat``，作为LSTM的输入  
   
-- note:   每轮LSTMCell的迭代都需要做一次Attention，可认为是当前序列所注意的图像区域  
+- note:   每轮``LSTMCell``的迭代都需要做一次Attention，可认为是当前序列所注意的图像区域  
 
 ### train.py  
 - 优化器  
@@ -44,7 +44,7 @@ Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)
 	2. ``teacher forcing``下的验证集分数为E0: 19.67;   E1: 20.85;    E2: 21.43;    E3: 21.72;    E4: 21.90;    E5: 22.32;    E6: 22.34;    **E7: 22.47**;    E8: 22.48;    E9: 22.29  
 	3. 为了防止过拟合，我选择了Epoch7对应的模型
 - 其他超参数  
-	我将预训练轮数设为10个``Epoch``，``batch_size``设为64，LSTM的``hidden_size``设为768，``attention dim``设为512，``word embedding``维度设为256，``dropout``设为0.5
+	我将预训练轮数设为10个``Epoch``，``batch_size``设为``64``，LSTM的``hidden_size``设为``768``，``attention dim``设为``512``，``word embedding``维度设为``256``，``dropout``设为``0.5``
 - 训练时间  
 	在单卡``NVIDIA RTX A5000``下，单精度训练一个Epoch约耗时34分钟
 - note：  
