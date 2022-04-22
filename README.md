@@ -64,12 +64,12 @@ Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)
 	BLEU4, METEOR, ROUGE, CIDEr-D, SPICE  
 - 原论文得分  
 	BLEU4	|METEOR  
-	---	|:---:  
+	:---:	|:---:  
 	24.3	|23.90  
 - 我的模型得分  
 	1. BLEU4  
 		beam_size	|BLEU4  
-		---		|:---:  
+		:---:		|:---:  
 		1		|27.08  
 		2		|29.24  
 		3		|**29.54**  
