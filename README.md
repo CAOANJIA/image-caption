@@ -25,11 +25,12 @@ Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)
 	3. 采用dropout避免过拟合  
   
 - **Attention**: ``scaled dot-product attention``  （与论文中不同）
-	1. 利用hidden state经过fc层获得``Q``，feature map经过2个不同的fc层获得``K``和``V``，  
-	Query size: [att_dim, 1], Key size: [num_pixels, att_dim], alpha size: [num_pixels, 1], Value size: [num_pixels, encoder_dim]  
-	2. 缩放点积并依次通过relu、softmax获得attention score  
-	3. 将V的每个pixel的所有channel都乘上该pixel对应的score，再经过residual层加上原始的encoder_out，然后对每个channel求和，得到最终的图像表示  
-	4. 最后将word embedding与此向量concat，作为LSTM的输入  
+	1. 利用hidden state经过fc层获得``Query``，feature map经过2个不同的fc层获得``Key``和``Value``，  
+	Query size: ``[att_dim, 1]``, Key size: ``[num_pixels, att_dim]``,   
+	score size: ``[num_pixels, 1]``, Value size: ``[num_pixels, encoder_dim]``  
+	2. 缩放点积并依次通过``relu``、``softmax``获得``attention score``  
+	3. 将``Value``的每个pixel的所有channel都乘上该pixel对应的score，再经过``residual``层加上原始的``encoder_out``，然后对每个channel求和，得到最终的图像表示  
+	4. 最后将``word embedding``与此向量``concat``，作为LSTM的输入  
   
 - note:   每轮LSTMCell的迭代都需要做一次Attention，可认为是当前序列所注意的图像区域  
 
@@ -73,8 +74,8 @@ Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)
 		:---:		|:---:  
 		1		|27.08  
 		2		|29.24  
-		3		|**29.54**  
-		4		|29.78  
+		3		|29.54  
+		**4**		|**29.78**  
   		5		|29.70  
 	
 ## 结果  
