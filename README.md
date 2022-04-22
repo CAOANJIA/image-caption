@@ -25,7 +25,7 @@ Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)
 	3. 采用dropout避免过拟合  
   
 - **Attention**: ``scaled dot-product attention``  （与论文中不同）
-	1. 利用hidden state经过fc层获得Q，feature map经过2个不同的fc层获得K和V ，Query size: [att_dim, 1], Key size: [num_pixels, att_dim], alpha size: [num_pixels, 1], Value size: [num_pixels, encoder_dim]  
+	1. 利用hidden state经过fc层获得``Q``，feature map经过2个不同的fc层获得``K``和``V``，Query size: [att_dim, 1], Key size: [num_pixels, att_dim], alpha size: [num_pixels, 1], Value size: [num_pixels, encoder_dim]  
 	2. 缩放点积并依次通过relu、softmax获得attention score  
 	3. 将V的每个pixel的所有channel都乘上该pixel对应的score，再经过residual层加上原始的encoder_out，然后对每个channel求和，得到最终的图像表示  
 	4. 最后将word embedding与此向量concat，作为LSTM的输入  
@@ -34,19 +34,19 @@ Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)
 
 ### train.py  
 - 优化器  
-	``Adam``，对于decoder我将前5个Epoch的lr设为5e-4，后5个Epoch的lr设为(5e-4)/2，在此设置之前我尝试了``Adadelta``（lr为1e-3和1e-2）Adam（lr为1e-2，1e-3和1e-4） 
+	``Adam``，对于decoder我将前5个Epoch的lr设为``5e-4``，后5个Epoch的lr设为``(5e-4)/2``，在此设置之前我尝试了Adadelta（lr为1e-3和1e-2）Adam（lr为1e-2，1e-3和1e-4） 
 - 损失函数  
 	``cross-entropy`` + ``双重随机注意力正则化``（论文中的设定，鼓励模型既关注图像的每个部分又关注具体目标）
 - 验证部分  
 	1. 利用BLEU4分数作为模型选择的依据
-	2. teacher forcing下的验证集分数为E0: 19.67;   E1: 20.85;    E2: 21.43;    E3: 21.72;    E4: 21.90;    E5: 22.32;    E6: 22.34;    **E7: 22.47**;    E8: 22.48;    E9: 22.29  
+	2. ``teacher forcing``下的验证集分数为E0: 19.67;   E1: 20.85;    E2: 21.43;    E3: 21.72;    E4: 21.90;    E5: 22.32;    E6: 22.34;    **E7: 22.47**;    E8: 22.48;    E9: 22.29  
 	3. 为了防止过拟合，我选择了Epoch7对应的模型
 - 其他超参数  
-	我将预训练轮数设为10个Epoch，batch_size设为64，LSTM的hidden_size设为768，attention向量的维度设为512，词向量维度设为256，dropout设为0.5
+	我将预训练轮数设为10个``Epoch``，``batch_size``设为64，LSTM的``hidden_size``设为768，``attention dim``设为512，``word embedding``维度设为256，``dropout``设为0.5
 - 训练时间  
-	在单卡NVIDIA RTX A5000下，单精度训练一个Epoch约耗时34分钟
+	在单卡``NVIDIA RTX A5000``下，单精度训练一个Epoch约耗时34分钟
 - note：  
-	1. pack_padded_sequence的使用，不能写成predictions, _ = pack_padded_sequence(predictions, decode_lens, batch_first=True)的形式，而是predictions = pack_padded_sequence(predictions, decode_lens, batch_first=True)[0]  
+	1. ``pack_padded_sequence``的使用，不能写成predictions, _ = pack_padded_sequence(predictions, decode_lens, batch_first=True)的形式，而是predictions = pack_padded_sequence(predictions, decode_lens, batch_first=True)[0]  
 	2. 若不fine-tune，必须将encoder的所有参数的requires_grad设为False 
 	3. 截至目前，我尝试了多种lr并尝试微调VGG，训练效果不佳，我猜测是因为使用opencv简单地resize图像至3x224x224，因此我利用PIL.Image对图像重新预处理（利用crop和ANTIALIAS），后续实验将继续进行  
 ### finetune.py  
@@ -59,9 +59,9 @@ Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)
 
 ### eval.py  
 - 方法  
-	BeamSearch、Autoregression  
+	``BeamSearch``, ``Autoregression``  
 - 指标  
-	BLEU4, METEOR, ROUGE, CIDEr-D, SPICE  
+	``BLEU4``, ``METEOR``, ``ROUGE``, ``CIDEr-D``, ``SPICE``  
 - 原论文得分  
 	BLEU4	|METEOR  
 	:---:	|:---:  
@@ -89,7 +89,7 @@ Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)
 
 ## 未来工作建议  
 1. 采用预训练词向量  
-2. encoder可采用Resnet-101或Resnet-152  
+2. encoder可采用``Resnet-101``或``Resnet-152``  
 3. 微调encoder  
 
 ## 附录	
