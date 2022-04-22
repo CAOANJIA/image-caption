@@ -6,7 +6,7 @@ Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)
 ## 具体实现  
 
 ### create_input_files.py  
-- 划分数据集，并将图像进行ANTIALIAS处理并resize成3x224x224，并生成word map  
+- 划分数据集，并将图像进行``ANTIALIAS``处理并resize成``3x224x224``，并生成word map  
 	
 ### dataloader.py  
 - 获取DataLoader  
@@ -17,7 +17,7 @@ Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)
 
 - **Encoder**: ``VGG19``  
 	1. 使用torchvision.models中在ImageNet上预训练好的模型  
-	2. 去除FC层和最后一个maxpool层，即输出为14x14x512的特征图  
+	2. 去除FC层和最后一个maxpool层，即输出为``14x14x512``的特征图  
   
 - **Decoder**: ``LSTM``  
 	1. h0和c0利用encoder输出的特征图初始化  
@@ -25,7 +25,8 @@ Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)
 	3. 采用dropout避免过拟合  
   
 - **Attention**: ``scaled dot-product attention``  （与论文中不同）
-	1. 利用hidden state经过fc层获得``Q``，feature map经过2个不同的fc层获得``K``和``V``，Query size: [att_dim, 1], Key size: [num_pixels, att_dim], alpha size: [num_pixels, 1], Value size: [num_pixels, encoder_dim]  
+	1. 利用hidden state经过fc层获得``Q``，feature map经过2个不同的fc层获得``K``和``V``，  
+	Query size: [att_dim, 1], Key size: [num_pixels, att_dim], alpha size: [num_pixels, 1], Value size: [num_pixels, encoder_dim]  
 	2. 缩放点积并依次通过relu、softmax获得attention score  
 	3. 将V的每个pixel的所有channel都乘上该pixel对应的score，再经过residual层加上原始的encoder_out，然后对每个channel求和，得到最终的图像表示  
 	4. 最后将word embedding与此向量concat，作为LSTM的输入  
@@ -47,11 +48,11 @@ Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)
 	在单卡``NVIDIA RTX A5000``下，单精度训练一个Epoch约耗时34分钟
 - note：  
 	1. ``pack_padded_sequence``的使用，不能写成predictions, _ = pack_padded_sequence(predictions, decode_lens, batch_first=True)的形式，而是predictions = pack_padded_sequence(predictions, decode_lens, batch_first=True)[0]  
-	2. 若不fine-tune，必须将encoder的所有参数的requires_grad设为False 
-	3. 截至目前，我尝试了多种lr并尝试微调VGG，训练效果不佳，我猜测是因为使用opencv简单地resize图像至3x224x224，因此我利用PIL.Image对图像重新预处理（利用crop和ANTIALIAS），后续实验将继续进行  
+	2. 若不fine-tune，必须将encoder的所有参数的``requires_grad``设为False 
+	3. 一开始我尝试了多种lr并尝试微调``VGG``，训练效果不佳，我猜测是因为简单地resize图像至``3x224x224``，因此我利用``PIL.Image``对图像重新预处理（利用``crop``和``ANTIALIAS``）  
 ### finetune.py  
 - 优化器  
-	encoder和decoder均为Adam，学习率均设为1e-4
+	encoder和decoder均为``Adam``，学习率均设为``1e-4``
 - 其余参数  
 	与预训练阶段相同  
 - note：  
@@ -77,15 +78,15 @@ Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)
   		5		|29.70  
 	
 ## 结果  
-- 在不微调Encoder的情况下模型BLEU4得分高于原论文，这可能是因为我采用了scaled-dot-product attention并对数据做了简单的预处理  
+- 在不微调Encoder的情况下模型BLEU4得分高于原论文，这可能是因为我采用了``scaled-dot-product attention``并对数据做了简单的预处理  
 - ``beam_size``增加时BLEU分数先增加再减小，1到2时分数提升较明显，2到4时的分数提升并不明显，在4时达到最高（29.78）并在5时分数下降  
 - 经验证，Epoch8对应的模型BLEU4得分不如Epoch7对应的模型（我选择的）的得分，证明了我的猜测和选择是正确的（验证集上BLEU4得分提升很小，防止过拟合选择Epoch7对应的模型）
 
 ## 实验心得与经验  
 1. 尝试了``Adam``不同的lr带来的影响，不应太大也不应太小，太大很难收敛，太小训练较慢  
 2. 加载预训练模型不finetune的话应设置其所有参数的``requires_grad``为False  
-3. 图像预处理的重要性：我尝试了简单resize图片至``3x224x224``，效果不好；然后尝试了使用crop和ANTIALIAS过滤器，训练效果变好，因此数据预处理十分重要  
-4. 参数初始化的重要性：我尝试了word embedding层和最后的fc层均匀初始化[-0.1, 0.1]，效果不好，去掉之后效果反而更佳，说明不恰当的初始化反而会让训练变困难  
+3. 图像预处理的重要性：我尝试了简单``resize``图片至``3x224x224``，效果不好；然后尝试了使用``crop``和``ANTIALIAS``过滤器，训练效果变好，因此数据预处理十分重要  
+4. 参数初始化的重要性：我尝试了``word embedding``层和最后的``fc``层均匀初始化[-0.1, 0.1]，效果不好，去掉之后效果反而更佳，说明不恰当的初始化反而会让训练变困难  
 
 ## 未来工作建议  
 1. 采用预训练词向量  
