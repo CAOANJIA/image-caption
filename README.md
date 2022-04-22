@@ -15,16 +15,16 @@ Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)
 - 模型总览  
 	采用Encoder-Decoder架构和跨模态Attention机制  
 
-- **Encoder: VGG19**  
+- **Encoder**: ``VGG19``  
 	1. 使用torchvision.models中在ImageNet上预训练好的模型  
 	2. 去除FC层和最后一个maxpool层，即输出为14x14x512的特征图  
   
-- **Decoder: LSTM**  
+- **Decoder**: ``LSTM``  
 	1. h0和c0利用encoder输出的特征图初始化  
 	2. word embedding层与fc层均初始化，且不使用预训练词向量如GloVe  
 	3. 采用dropout避免过拟合  
   
-- **Attention: scaled dot-product attention**  （与论文中不同）
+- **Attention**: ``scaled dot-product attention``  （与论文中不同）
 	1. 利用hidden state经过fc层获得Q，feature map经过2个不同的fc层获得K和V ，Query size: [att_dim, 1], Key size: [num_pixels, att_dim], alpha size: [num_pixels, 1], Value size: [num_pixels, encoder_dim]  
 	2. 缩放点积并依次通过relu、softmax获得attention score  
 	3. 将V的每个pixel的所有channel都乘上该pixel对应的score，再经过residual层加上原始的encoder_out，然后对每个channel求和，得到最终的图像表示  
@@ -34,9 +34,9 @@ Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)
 
 ### train.py  
 - 优化器  
-	Adam 对于decoder我将前5个Epoch的lr设为5e-4，后5个Epoch的lr设为(5e-4)/2，在此设置之前我尝试了Adadelta（lr为1e-3和1e-2）Adam（lr为1e-2，1e-3和1e-4） 
+	``Adam``，对于decoder我将前5个Epoch的lr设为5e-4，后5个Epoch的lr设为(5e-4)/2，在此设置之前我尝试了``Adadelta``（lr为1e-3和1e-2）Adam（lr为1e-2，1e-3和1e-4） 
 - 损失函数  
-	交叉熵+双重随机注意力正则化（论文中的设定，鼓励模型既关注图像的每个部分又关注具体目标）
+	``cross-entropy`` + ``双重随机注意力正则化``（论文中的设定，鼓励模型既关注图像的每个部分又关注具体目标）
 - 验证部分  
 	1. 利用BLEU4分数作为模型选择的依据
 	2. teacher forcing下的验证集分数为E0: 19.67;   E1: 20.85;    E2: 21.43;    E3: 21.72;    E4: 21.90;    E5: 22.32;    E6: 22.34;    **E7: 22.47**;    E8: 22.48;    E9: 22.29  
