@@ -21,13 +21,13 @@ Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)
   
 - **Decoder**: ``LSTM``  
 	1. ``h0``和``c0``利用encoder输出的特征图初始化  
-	2. ``word embedding``层与``fc``层均初始化，且不使用预训练词向量如``GloVe``  
+	2. 且不使用预训练词向量如``GloVe``  
 	3. 采用``dropout``避免过拟合  
   
 - **Attention**: ``scaled dot-product attention``  （与论文中不同）
-	1. 利用hidden state经过fc层获得``Query``，feature map经过2个不同的fc层获得``Key``和``Value``，  
-	Query size: ``[att_dim, 1]``, Key size: ``[num_pixels, att_dim]``,   
-	score size: ``[num_pixels, 1]``, Value size: ``[num_pixels, encoder_dim]``  
+	1. 利用``hidden state``经过``fc``层获得``Query``，feature map经过2个不同的fc层获得``Key``和``Value``，  
+	Query size: [att_dim, 1], Key size: [num_pixels, att_dim],   
+	score size: [num_pixels, 1], Value size: ``[num_pixels, encoder_dim]  
 	2. 缩放点积并依次通过``relu``、``softmax``获得``attention score``  
 	3. 将``Value``的每个pixel的所有channel都乘上该pixel对应的score，再经过``residual``层加上原始的``encoder_out``，然后对每个channel求和，得到最终的图像表示  
 	4. 最后将``word embedding``与此向量``concat``，作为LSTM的输入  
@@ -36,15 +36,15 @@ Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)
 
 ### train.py  
 - 优化器  
-	``Adam``，对于decoder我将前5个Epoch的lr设为``5e-4``，后5个Epoch的lr设为``(5e-4)/2``，在此设置之前我尝试了Adadelta（lr为1e-3和1e-2）Adam（lr为1e-2，1e-3和1e-4） 
+	``Adam``，对于decoder我将前5个Epoch的``lr``设为``5e-4``，后5个Epoch的``lr``设为``(5e-4)/2``，在此设置之前我尝试了Adadelta（lr为1e-3和1e-2）Adam（lr为1e-2，1e-3和1e-4） 
 - 损失函数  
-	``cross-entropy`` + ``双重随机注意力正则化``（论文中的设定，鼓励模型既关注图像的每个部分又关注具体目标）
+	``cross entropy`` + ``双重随机注意力正则化``（论文中的设定，鼓励模型既关注图像的每个部分又关注具体目标）
 - 验证部分  
-	1. 利用BLEU4分数作为模型选择的依据
+	1. 利用``BLEU4``分数作为模型选择的依据
 	2. ``teacher forcing``下的验证集分数为E0: 19.67;   E1: 20.85;    E2: 21.43;    E3: 21.72;    E4: 21.90;    E5: 22.32;    E6: 22.34;    **E7: 22.47**;    E8: 22.48;    E9: 22.29  
 	3. 为了防止过拟合，我选择了Epoch7对应的模型
 - 其他超参数  
-	我将预训练轮数设为10个``Epoch``，``batch_size``设为``64``，LSTM的``hidden_size``设为``768``，``attention dim``设为``512``，``word embedding``维度设为``256``，``dropout``设为``0.5``
+	我将预训练轮数设为``10``个``Epoch``，``batch_size``设为``64``，LSTM的``hidden_size``设为``768``，``attention dim``设为``512``，``word embedding``维度设为``256``，``dropout``设为``0.5``
 - 训练时间  
 	在单卡``NVIDIA RTX A5000``下，单精度训练一个Epoch约耗时34分钟
 - note：  
