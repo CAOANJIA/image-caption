@@ -63,7 +63,7 @@
   2. 若不fine-tune，必须将encoder的所有参数的``requires_grad``设为False 
   3. 一开始我尝试了多种lr并尝试微调``VGG``，训练效果不佳，我猜测是因为简单地resize图像至``3x224x224``，因此我利用``PIL.Image``对图像重新预处理（利用``crop``和``ANTIALIAS``）  
      
-     ### finetune.py
+### finetune.py
 - 优化器  
     encoder和decoder均为``Adam``，学习率均设为``1e-4``
 - 其余参数  
