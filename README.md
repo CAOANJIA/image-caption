@@ -43,27 +43,37 @@
 ### train.py
 
 - 优化器  
-    ``Adam``，对于decoder我将前5个Epoch的``lr``设为``5e-4``，后5个Epoch的``lr``设为``(5e-4)/2``，在此设置之前我尝试了Adadelta（lr为1e-3和1e-2）Adam（lr为1e-2，1e-3和1e-4） 
+    ``Adam``，对于decoder我将前5个Epoch的``lr``设为``5e-4``，后5个Epoch的``lr``设为``(5e-4)/2``   
+
 - 损失函数  
     ``cross entropy`` + ``doubly stochastic regularization``（论文中的设定，鼓励模型既关注图像的每个部分又关注具体目标）
+
 - 验证部分  
+  
   1. 利用``BLEU4``分数作为模型选择的依据
   2. ``teacher forcing``下的验证集分数为E0: 19.67;   E1: 20.85;    E2: 21.43;    E3: 21.72;    E4: 21.90;    E5: 22.32;    E6: 22.34;    **E7: 22.47**;    **E8: 22.48**;    E9: 22.29  
   3. 为了防止过拟合，我选择了Epoch7对应的模型
+
 - 其他超参数  
     我将预训练轮数设为``10``个``Epoch``，``batch_size``设为``64``，LSTM的``hidden_size``设为``768``，``attention dim``设为``512``，``word embedding``维度设为``256``，``dropout``设为``0.5``
+
 - 训练时间  
     在单卡``NVIDIA RTX A5000``下，单精度训练一个Epoch约耗时34分钟
+
 - note：  
+  
   1. ``pack_padded_sequence``的使用，不能写成
      
      predictions, _ = pack_padded_sequence(predictions, decode_lens, batch_first=True)的形式，
      
      而是predictions = pack_padded_sequence(predictions, decode_lens, batch_first=True)[0]  
+  
   2. 若不fine-tune，必须将encoder的所有参数的``requires_grad``设为False 
+  
   3. 一开始我尝试了多种lr并尝试微调``VGG``，训练效果不佳，我猜测是因为简单地resize图像至``3x224x224``，因此我利用``PIL.Image``对图像重新预处理（利用``crop``和``ANTIALIAS``）  
-     
+
 ### finetune.py
+
 - 优化器  
     encoder和decoder均为``Adam``，学习率均设为``1e-4``
 - 其余参数  
@@ -75,14 +85,18 @@
 
 - 方法  
     ``BeamSearch``, ``Autoregression``  
+
 - 指标  
     ``BLEU4``, ``METEOR``, ``ROUGE``, ``CIDEr-D``, ``SPICE``  
+
 - 原论文得分  
   
   | BLEU4 | METEOR |
   |:-----:|:------:|
   | 24.3  | 23.90  |
+
 - 我的模型得分  
+  
   1. BLEU4  
      
      | beam_size | BLEU4     |
@@ -101,8 +115,8 @@
 
 ## 实验心得与经验
 
-1. 尝试了``Adam``不同的lr带来的影响，不应太大也不应太小，太大很难收敛，太小训练较慢  
-2. 加载预训练模型不finetune的话应设置其所有参数的``requires_grad``为False  
+1. 优化器、学习率的重要性：学习率不应太大也不应太小，太大很难收敛，太小训练较慢，我在实验中曾尝试了``Adadelta``（lr为1e-3和1e-2）``Adam``（lr为1e-2，1e-3和1e-4），效果均不够理想，最终选择了``Adam``并将``lr``设为``5e-4``    
+2. 加载预训练模型不微调的话应设置其所有参数的``requires_grad``为``False``，我在实验开始曾忘记设置，导致训练速度很慢  
 3. 图像预处理的重要性：我尝试了简单``resize``图片至``3x224x224``，效果不好；然后尝试了使用``crop``和``ANTIALIAS``过滤器，训练效果变好，因此数据预处理十分重要  
 4. 参数初始化的重要性：我尝试了``word embedding``层和最后的``fc``层均匀初始化[-0.1, 0.1]，效果不好，去掉之后效果反而更佳，说明不恰当的初始化反而会让训练变困难  
 
