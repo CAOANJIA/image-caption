@@ -1,4 +1,4 @@
-# 论文Show, Attend and Tell的Pytorch实现
+# 论文"Show, Attend and Tell"的Pytorch实现及改进
 
 原文地址：[Show, Attend and Tell: Neural Image Caption Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)    
 实验进行中...
@@ -131,7 +131,7 @@
 ## 附录
 
 - 参考  
-  1. [Image Caption Tutorial](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Image-Captioning)  
-  2. [Karpathy's splits of MSCOCO](https://github.com/karpathy/neuraltalk2)  
+  1. [Karpathy's splits of MSCOCO](https://github.com/karpathy/neuraltalk2)  
+  2. [Image Caption Tutorial](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Image-Captioning)  
 - 数据集下载  
-    [MSCOCO](https://cocodataset.org/#download) 
+    [MSCOCO-2014](https://cocodataset.org/#download) 
