@@ -48,7 +48,7 @@ class Attention(nn.Module):
         att_final = torch.div(att_final, math.sqrt(self.att_dim))      # scaled dot product
         # print(att_final.size())
         alpha = self.softmax(self.relu(att_final))
-        att_out = alpha * att_v + encoder_out                   # residual
+        att_out = alpha * att_v
         # att_out = self.layer_norm(att_out)                      # norm
         att_out = att_out.sum(dim=1)                            # 对pixels求和，降维成 [batch_size, encoder_dim]
         # print("att_out size: ")
