@@ -107,6 +107,10 @@
      | **4**     | **29.78** |
      | 5         | 29.70     |
 
+## visualization.py
+
+- 可视化，显示每个时间步的attention区域
+
 ## 结果
 
 - 在不微调Encoder的情况下模型BLEU4得分高于原论文，这可能是因为我采用了``scaled-dot-product attention``并对数据做了简单的预处理  
