@@ -62,15 +62,19 @@
     我将预训练轮数设为``10``个``Epoch``，``batch_size``设为``64``，LSTM的``hidden_size``设为``768``，``attention dim``设为``512``，``word embedding``维度设为``256``，``dropout``设为``0.5``
 
 - 训练时间  
-    在单卡``NVIDIA RTX A5000``下，单精度训练一个Epoch约耗时34分钟
+    在单卡``NVIDIA RTX A5000``下，单精度训练一个Epoch约耗时33分钟
 
 - note：  
   
   1. ``pack_padded_sequence``的使用，不能写成
      
-     predictions, _ = pack_padded_sequence(predictions, decode_lens, batch_first=True)的形式，
+     predictions, _ = pack_padded_sequence(predictions, decode_lens, batch_first=True)
      
-     而是predictions = pack_padded_sequence(predictions, decode_lens, batch_first=True)[0]  
+     的形式，
+     
+     而是
+     
+     predictions = pack_padded_sequence(predictions, decode_lens, batch_first=True)[0]  
   
   2. 若不fine-tune，必须将encoder的所有参数的``requires_grad``设为False 
   
@@ -91,7 +95,7 @@
     ``BeamSearch``, ``Autoregression``  
 
 - 指标  
-    ``BLEU4``, ``METEOR``, ``ROUGE``, ``CIDEr-D``, ``SPICE``  
+    ``BLEU4``, ``METEOR``, ``ROUGE``, ``CIDEr``, ``SPICE``  
 
 - 原论文得分  
   
