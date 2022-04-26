@@ -129,9 +129,17 @@
 ## visualization.py
 
 - 可视化，显示每个时间步的attention区域  
-- examples：
-  
-  ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/Figure_1.png)
+
+- good examples：  
+1. 不错的关注区域和描述  
+![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/Figure_1.png)  
+2. 识别出了黑猫  
+![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/good_train12102.png)  
+- bad examples：  
+1. 关注了镜子中的婴儿  
+![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/bad_train1790.png)  
+2. 将大象的脚描述成了鞋子  
+![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/bad_train8549.png)  
 
 ## 结果
 
