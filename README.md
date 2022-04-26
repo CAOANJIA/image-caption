@@ -131,15 +131,25 @@
 - 可视化，显示每个时间步的attention区域  
 
 - good examples：  
-1. 不错的关注区域和描述  
-![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/Figure_1.png)  
-2. 识别出了黑猫  
-![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/good_train12102.png)  
+  
+  1. 好的关注区域：人、长椅和雨均在对应的时间步被关注  
+  
+   ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/good_train510.png)  
+  
+  2. 好的描述：描述出了黑猫  
+  
+   ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/good_train12102.png)  
+  
 - bad examples：  
-1. 关注了镜子中的婴儿  
-![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/bad_train1790.png)  
-2. 将大象的脚描述成了鞋子  
-![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/bad_train8549.png)  
+  
+  1. 不好的关注区域：关注了镜子中的婴儿  
+  
+   ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/bad_train1790.png)  
+  
+  2. 不好的描述：将大象的脚描述成了鞋子  
+  
+   ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/bad_train8549.png)  
+  
 
 ## 结果
 
