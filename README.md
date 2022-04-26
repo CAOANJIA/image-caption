@@ -136,20 +136,20 @@
 
 - good examples：  
   1. 好的关注区域：人、长椅和雨均在对应的时间步被关注  
-     <div>
-     <img src=''https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/good_train510.png''/>
+     <div align=center>
+     <img src=''../img/good_train510.png''/>
      </div>
   2. 好的描述：描述出了黑猫  
-     <div>
+     <div align=center>
      <img src=''https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/good_train12102.png''/>
      </div>
 - bad examples：  
   1. 不好的关注区域：关注了镜子中的婴儿  
-     <div>
+     <div align=center>
      <img src=''https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/bad_train1790.png''/>
      </div>
   2. 不好的描述：将大象的脚描述成了鞋子  
-     <div>
+     <div align=center>
      <img src=''https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/bad_train8549.png''/>
      </div>
   
