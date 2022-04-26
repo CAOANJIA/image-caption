@@ -25,26 +25,25 @@ def main(args):
     with open(word_map_file, 'r') as j:
         word_map = json.load(j)
 
-    checkpoint = torch.load('autodl-tmp/models/checkpoint_epoch_9.pth')
-
+    checkpoint = torch.load('autodl-tmp/models/checkpoint_epoch_4.pth_BEST_BLEU')
+    
+    current_epoch = checkpoint['epoch'] + 1
+    
     encoder = EncoderCNN().to(device)
+
+    for i, param in enumerate(encoder.parameters()):
+        param.requires_grad = False
 
     decoder = DecoderLSTM(decoder_dim=args.decoder_dim, att_dim=args.att_dim, vocab_size=len(word_map),
                           embed_dim=args.embed_dim, dropout=args.dropout).to(device)
     
-
     encoder.load_state_dict(checkpoint['encoder'])
     decoder.load_state_dict(checkpoint['decoder'])
-
-    for i, param in enumerate(encoder.parameters()):
-        param.requires_grad = True
-        
-    #     encoder_optimizer = None
-    encoder_optimizer = opt.Adam(params=filter(lambda p: p.requires_grad, encoder.parameters()), lr=args.encoder_lr)
-    decoder_optimizer = opt.Adam(params=filter(lambda p: p.requires_grad, decoder.parameters()), lr=args.decoder_lr)
-
-    #     decoder_optimizer.load_state_dict(checkpoint['decoder_optimizer'])
-    lr = args.encoder_lr
+    
+    encoder_optimizer = None  # 不fine-tune VGG
+    decoder_optimizer = opt.Adam(params=filter(lambda p: p.requires_grad, decoder.parameters()), lr=args.decoder_lr/2)
+    
+    
     criterion = nn.CrossEntropyLoss().to(device)
 
     transform = transforms.Compose([
@@ -57,14 +56,12 @@ def main(args):
     val_loader = get_loader(data_folder=args.data_folder, data_name=args.data_name, split='VAL', transform=transform,
                             batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers)
 
-    best_bleu4 = 0
+    best_bleu4 = checkpoint['bleu-4']
 
     print('start training...')
-    for epoch in range(args.epochs):
-        if epoch > 0:
-            lr = lr * 0.8
-            encoder_optimizer = opt.Adam(params=filter(lambda p: p.requires_grad, encoder.parameters()), lr=lr)
-            decoder_optimizer = opt.Adam(params=filter(lambda p: p.requires_grad, decoder.parameters()), lr=lr)
+    for epoch in range(current_epoch, args.epochs):
+        if current_epoch == 8:
+            decoder_optimizer = opt.Adam(params=filter(lambda p: p.requires_grad, decoder.parameters()), lr=args.decoder_lr/4)
         train(train_loader, encoder, decoder, encoder_optimizer, decoder_optimizer, criterion, epoch, args.print_step)
         bleu_4 = val(val_loader, encoder, decoder, criterion, args.print_step, word_map)
         is_best = bleu_4 > best_bleu4
@@ -91,6 +88,7 @@ def train(train_loader, encoder, decoder, encoder_optimizer, decoder_optimizer, 
         # targets, _ = pack_padded_sequence(targets, decode_lens, batch_first=True)
 
         predictions = pack_padded_sequence(predictions, decode_lens, batch_first=True)[0]
+
         targets = pack_padded_sequence(targets, decode_lens, batch_first=True)[0]  # pytorch1.1.0后只能这样，不然报错
 
         loss = criterion(predictions, targets)
@@ -177,9 +175,9 @@ def save_checkpoint(save_path, epoch, encoder, decoder, encoder_optimizer, decod
              'bleu-4': bleu4,
              'encoder': encoder.state_dict(),
              'decoder': decoder.state_dict(),
-             'encoder_optimizer': encoder_optimizer.state_dict(),
+             'encoder_optimizer': None,
              'decoder_optimizer': decoder_optimizer.state_dict()}
-    filename = 'checkpoint_' + 'finetune_epoch_{}'.format(epoch) + '.pth'
+    filename = 'checkpoint_' + 'epoch_{}'.format(epoch) + '.pth'
     save_path = os.path.join(save_path, filename)
     torch.save(state, save_path)
     # If this checkpoint is the best so far, store a copy so it doesn't get overwritten by a worse checkpoint
@@ -200,10 +198,9 @@ if __name__ == '__main__':
                         default='coco_5_cap_per_img_5_min_word_freq', help='data name of json and hdf5')
 
     parser.add_argument('--num_workers', type=int, default=4, help='num workers')
-    parser.add_argument('--batch_size', type=int, default=32, help='batch size')
-    parser.add_argument('--epochs', type=int, default=4, help='epochs')
-    parser.add_argument('--encoder_lr', type=float, default=1e-4, help='lr of decoder')
-    parser.add_argument('--decoder_lr', type=float, default=1e-4, help='lr of decoder')
+    parser.add_argument('--batch_size', type=int, default=64, help='batch size')
+    parser.add_argument('--epochs', type=int, default=10, help='epochs')
+    parser.add_argument('--decoder_lr', type=float, default=5e-4, help='lr of decoder')
     parser.add_argument('--dropout', type=float, default=0.5, help='dropout')
     parser.add_argument('--lbd', type=float, default=0.2, help='lambda')
     parser.add_argument('--save_path', type=str, default='autodl-tmp/models', help='path for saving models')

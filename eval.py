@@ -25,7 +25,7 @@ def main(args):
     rev_word_map = {v: k for k, v in word_map.items()}
     vocab_size = len(word_map)
 
-    checkpoint = 'autodl-tmp/models/checkpoint_epoch_7.pth'
+    checkpoint = 'autodl-tmp/models/checkpoint_finetune_epoch_4.pth'
 
     # Load model
     checkpoint = torch.load(checkpoint)
@@ -44,9 +44,9 @@ def main(args):
     transform = transforms.Compose([
         transforms.Normalize(mean=(0.485, 0.456, 0.406),
                              std=(0.229, 0.224, 0.225))])
-
-    print("\nBLEU-4 score @ beam size of %d is %.4f." % (args.beam_size, evaluate(args.beam_size, encoder, decoder, transform, word_map)))
-
+    for beam_size in range(1, 5):
+        print("\nBLEU-4 score @ beam size of %d is %.4f." % (beam_size, evaluate(beam_size, encoder, decoder, transform, word_map)))
+    
 
 def evaluate(beam_size, encoder, decoder, transform, word_map):
     """

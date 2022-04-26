@@ -232,9 +232,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Show, Attend, and Tell - Tutorial - Generate Caption')
 
     parser.add_argument('--img', '-i',
-                        default='D:/datasets/coco/images/val2014/COCO_val2014_000000005325.jpg', help='path to image')
+                        default='D:/datasets/coco/images/train2014/COCO_train2014_000000000081.jpg', help='path to image')
     parser.add_argument('--model', '-m',
-                        default='D:/models/Show, Attend and Tell/checkpoint_epoch_7.pth', help='path to model')
+                        default='D:/models/Show, Attend and Tell/checkpoint_finetune_epoch_3.pth', help='path to model')
     parser.add_argument('--word_map', '-wm',
                         default='D:/datasets/coco/images/WORDMAP_coco_5_cap_per_img_5_min_word_freq.json', help='path to word map JSON')
     parser.add_argument('--beam_size', '-b', default=4, type=int, help='beam size for beam search')
