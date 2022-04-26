@@ -131,7 +131,7 @@
 - 可视化，显示每个时间步的attention区域  
 - examples：
   
-  ! [train510](../img/Figure_1.png)
+  ![train510](../img/Figure_1.png)
 
 ## 结果
 
