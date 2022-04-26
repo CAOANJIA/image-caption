@@ -131,7 +131,7 @@
 - 可视化，显示每个时间步的attention区域  
 - examples：
   
-  ![train510](D:\Git%20Projects\show-attend-and-tell\img\Figure_1.png)
+  ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/Figure_1.png)
 
 ## 结果
 
