@@ -17,28 +17,32 @@
 
 - 模型总览  
     采用Encoder-Decoder架构和跨模态Attention机制  
-
+  
 - **Encoder**: ``VGG19``  
-  
   1. 使用``torchvision.models``中在``ImageNet``上预训练好的模型  
+  
   2. 去除``fc``层和最后一个``maxpool``层，即输出为``14x14x512``的特征图  
-
+  
 - **Decoder**: ``LSTM``  
-  
   1. ``h0``和``c0``利用encoder输出的特征图初始化  
-  2. 且不使用预训练词向量如``GloVe``  
-  3. 采用``dropout``避免过拟合  
-
-- **Attention**: ``scaled dot-product attention``  （与论文中不同）
   
+  2. 且不使用预训练词向量如``GloVe``  
+  
+  3. 采用``dropout``避免过拟合  
+  
+- **Attention**: ``scaled dot-product attention``  （与论文中不同）
   1. 利用``hidden state``经过``fc``层获得``Query``，feature map经过2个不同的fc层获得``Key``和``Value``，  
      Query size: [att_dim, 1], Key size: [num_pixels, att_dim],   
      score size: [num_pixels, 1], Value size: ``[num_pixels, encoder_dim]  
+  
   2. 缩放点积并依次通过``relu``、``softmax``获得``attention score``  
+  
   3. 将``Value``的每个pixel的所有channel都乘上该pixel对应的score，再经过``residual``层加上原始的``encoder_out``，然后对每个channel求和，得到最终的图像表示  
+  
   4. 最后将``word embedding``与此向量``concat``，作为LSTM的输入  
-
-- note:   每轮``LSTMCell``的迭代都需要做一次Attention，可认为是当前序列所注意的图像区域  
+  
+- note:   
+每轮``LSTMCell``的迭代都需要做一次Attention，可认为是当前序列所注意的图像区域  
 
 ### train.py
 
