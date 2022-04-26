@@ -16,9 +16,9 @@
 ### model.py
 
 - 模型总览  
-    采用Encoder-Decoder架构和跨模态Attention机制  
+采用Encoder-Decoder架构和跨模态Attention机制  
   
-- **Encoder**: ``VGG19``  
+- **Encoder**: ``VGG19``
   1. 使用``torchvision.models``中在``ImageNet``上预训练好的模型  
   
   2. 去除``fc``层和最后一个``maxpool``层，即输出为``14x14x512``的特征图  
@@ -44,7 +44,7 @@
 - note:   
 每轮``LSTMCell``的迭代都需要做一次Attention，可认为是当前序列所注意的图像区域  
 
-### train.py
+### pretrain_step1.py | pretrain_step2.py
 
 - 优化器  
     ``Adam``，对于decoder我将前5个Epoch的``lr``设为``5e-4``，中间3个Epoch的``lr``设为``(5e-4)/2`` ，最后2个Epoch的``lr``设为``(5e-4)/4``  
@@ -65,7 +65,7 @@
 - 训练时间  
     在单卡``NVIDIA RTX A5000``下，单精度训练一个Epoch约耗时33分钟
 
-- note：  
+- note：
   1. ``pack_padded_sequence``的使用，不能写成
      
      predictions, _ = pack_padded_sequence(predictions, decode_lens, batch_first=True)
@@ -95,7 +95,7 @@
     在单卡``NVIDIA RTX A5000``下，单精度训练一个Epoch约耗时70分钟
 
 - note：  
-    可以看到，经过4个Epoch，验证集BLEU4分数仍然呈现上升趋势，因此预计继续进行训练并调小``lr``可以获得更好的模型，但finetune耗时较久，因此我不再进行训练
+可以看到，经过4个Epoch，验证集BLEU4分数仍然呈现上升趋势，因此预计继续进行训练并调小``lr``可以获得更好的模型，但finetune耗时较久，因此我不再进行训练
 
 ### eval.py
 
@@ -106,13 +106,11 @@
     ``BLEU4``, ``METEOR``, ``ROUGE``, ``CIDEr``, ``SPICE``  
 
 - 原论文得分  
-  
   | BLEU4 | METEOR |
   |:-----:|:------:|
   | 24.3  | 23.90  |
 
 - 我的模型得分  
-  
   1. BLEU4  
      
      <table>
@@ -125,8 +123,7 @@
          <tr>    <td align="center">5</td>    <td align="center">30.19</td>    <td align="center">32.02</td>    </tr>
      </table>
 
-## visualization.py
-
+## visualization.py  
 - 可视化，显示每个时间步的attention区域  
 
 - good examples：  
@@ -178,10 +175,10 @@
   
 2. encoder可采用``Resnet-101``或``Resnet-152``  
 
-## 附录
+## 附录  
 
-- 参考  
+- 参考
   1. [Karpathy's splits of MSCOCO](https://github.com/karpathy/neuraltalk2)  
   2. [Image Caption Tutorial](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Image-Captioning)  
 - 数据集下载  
-    [MSCOCO-2014](https://cocodataset.org/#download)  
+[MSCOCO-2014](https://cocodataset.org/#download)  
