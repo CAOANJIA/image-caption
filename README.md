@@ -1,8 +1,11 @@
 # 论文"Show, Attend and Tell"的PyTorch实现及改进
 
 原文地址：[Show, Attend and Tell: Neural Image Caption Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)    
-实验进行中...  
-<a href="#exp">有趣的结果</a>
+  
+<a href="#exp">有趣的例子</a>  
+  
+<a href="#eval">评价指标</a>  
+
 ## 具体实现
 
 ### create_input_files.py
@@ -115,7 +118,7 @@
   | BLEU4 | METEOR |
   |:-----:|:------:|
   | 24.3  | 23.90  |
-
+<a name="eval"></a>
 - 我的模型得分  
   
   1. BLEU4  
