@@ -1,4 +1,4 @@
-# 论文"Show, Attend and Tell"的Pytorch实现及改进
+# 论文"Show, Attend and Tell"的PyTorch实现及改进
 
 原文地址：[Show, Attend and Tell: Neural Image Caption Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)    
 实验进行中...
