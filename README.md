@@ -109,7 +109,7 @@
 
 - 方法  
     ``BeamSearch``, ``Autoregression``  
-
+<a name="eval"></a>
 - 指标  
     ``BLEU4``, ``METEOR``, ``ROUGE``, ``CIDEr``, ``SPICE``  
 
@@ -118,7 +118,7 @@
   | BLEU4 | METEOR |
   |:-----:|:------:|
   | 24.3  | 23.90  |
-<a name="eval"></a>
+
 - 我的模型得分  
   
   1. BLEU4  
