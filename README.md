@@ -135,9 +135,9 @@
 - 可视化，显示每个时间步的attention区域  
 
 - good examples：  
-  1. 好的关注区域：人、长椅和雨均在对应的时间步被关注  
+  1. 好的关注区域：在对应的时间步正确地关注了dog和toilet  
 
-     ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/good_train510.png)
+     ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/good_train1622.jpg)
 
   2. 好的描述：描述出了黑猫  
 
