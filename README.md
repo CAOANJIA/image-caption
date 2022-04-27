@@ -1,8 +1,8 @@
 # 论文"Show, Attend and Tell"的PyTorch实现及改进
 
 原文地址：[Show, Attend and Tell: Neural Image Caption Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)    
-实验进行中...
-
+实验进行中...  
+<a name="exp">有趣的结果</a>
 ## 具体实现
 
 ### create_input_files.py
@@ -40,12 +40,12 @@
   
   2. 缩放点积并依次通过``relu``、``softmax``获得``attention score``  
   
-  3. 将``Value``的每个pixel的所有channel都乘上该pixel对应的score，再经过``residual``层加上原始的``encoder_out``，然后对每个channel求和，得到最终的图像表示  
+  3. 将``Value``的每个pixel的所有channel都乘上该pixel对应的score，然后对每个channel求和，得到最终的图像表示  
   
   4. 最后将``word embedding``与此向量``concat``，作为LSTM的输入  
 
 - note:   
-  每轮``LSTMCell``的迭代都需要做一次Attention，可认为是当前序列所注意的图像区域  
+  每轮``LSTMCell``的迭代都需要做一次attention，可认为是当前序列所注意的图像区域  
 
 ### pretrain_step1.py | pretrain_step2.py
 
@@ -120,7 +120,7 @@
   
   1. BLEU4  
      
-     <table>
+     <table align="center">
          <tr>    <th rowspan="2">beam_size</th>    <th colspan="2" align="center">BLEU4</th>    </tr>
          <tr>    <th>w/o fine-tuning</th>    <th>w/ fine-tuning</th>    </tr>
          <tr>    <td align="center">1</td>    <td align="center">28.18</td>    <td align="center">29.62</td>    </tr>
@@ -133,7 +133,7 @@
 ## visualization.py
 
 - 可视化，显示每个时间步的attention区域  
-
+<a name="#exp"></a>
 - good examples：  
   1. 好的关注区域：在对应的时间步正确地关注了dog和toilet  
 
