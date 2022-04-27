@@ -137,7 +137,7 @@
 - good examples：  
   1. 好的关注区域：在对应的时间步正确地关注了dog和toilet  
 
-     ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/good_train1622.jpg)
+     ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/good_train1622.jpeg)
 
   2. 好的描述：描述出了黑猫  
 
