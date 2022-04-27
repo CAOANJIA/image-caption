@@ -2,7 +2,7 @@
 
 原文地址：[Show, Attend and Tell: Neural Image Caption Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)    
 实验进行中...  
-<a name="exp">有趣的结果</a>
+<a href="#exp">有趣的结果</a>
 ## 具体实现
 
 ### create_input_files.py
@@ -133,7 +133,7 @@
 ## visualization.py
 
 - 可视化，显示每个时间步的attention区域  
-<a name="#exp"></a>
+<a name="exp"></a>
 - good examples：  
   1. 好的关注区域：在对应的时间步正确地关注了dog和toilet  
 
