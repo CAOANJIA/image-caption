@@ -6,17 +6,17 @@
   
 <a href="#eval">评价指标</a>  
 
-## 具体实现
+# 具体实现
 
-### create_input_files.py
+## create_input_files.py
 
 - 划分数据集，并将图像进行``ANTIALIAS``处理并resize成``3x224x224``，并生成word map  
 
-### dataloader.py
+## dataloader.py
 
 - 获取``DataLoader``  
 
-### model.py
+## model.py
 
 - 模型总览  
   采用Encoder-Decoder架构和跨模态Attention机制  
@@ -50,7 +50,7 @@
 - note:   
   每轮``LSTMCell``的迭代都需要做一次attention，可认为是当前序列所注意的图像区域  
 
-### pretrain_step1.py | pretrain_step2.py
+## pretrain_step1.py | pretrain_step2.py
 
 - 优化器  
     ``Adam``，对于decoder我将前5个Epoch的``lr``设为``5e-4``，中间3个Epoch的``lr``设为``(5e-4)/2`` ，最后2个Epoch的``lr``设为``(5e-4)/4``  
@@ -86,7 +86,7 @@
   
   3. 一开始我尝试了多种lr并尝试微调``VGG``，训练效果不佳，我猜测是因为简单地resize图像至``3x224x224``，因此我利用``PIL.Image``对图像重新预处理（利用``crop``和``ANTIALIAS``）  
 
-### finetune.py
+## finetune.py
 
 - 优化器  
     encoder和decoder均为``Adam``，``lr``均设为``1e-4``  
@@ -105,7 +105,7 @@
 - note：  
   可以看到，经过4个Epoch，验证集BLEU4分数仍然呈现上升趋势，因此预计继续进行训练并调小``lr``可以获得更好的模型，但finetune耗时较久，因此我不再进行训练
 
-### eval.py
+## eval.py
 
 - 方法  
     ``BeamSearch``, ``Autoregression``  
@@ -156,7 +156,7 @@
      ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/bad_train8549.png)
 
   
-## 结果
+# 结果
 
 - 在不微调Encoder的情况下模型在测试集上的BLEU4得分高于原论文，这可能是因为我采用了``scaled-dot-product attention``，并对数据做了简单的预处理  
 
@@ -166,7 +166,7 @@
 
 - 值得注意的是，虽然模型在验证集上以``teacher forcing``生成的文本BLEU4分数并不算高，但是在测试集上以``autoregression``生成的表现却令人满意  
 
-## 实验心得与经验
+# 实验心得与经验
 
 1. 优化器、学习率的重要性：学习率不应太大也不应太小，太大很难收敛，太小训练较慢，我在实验中曾尝试了Adadelta（lr为1e-3和1e-2）和Adam（lr为1e-2，1e-3和1e-4），效果均不够理想，最终选择了``Adam``并将前五个epoch的``lr``设为``5e-4`` ，后五个epoch的``lr``  设为``(5e-4)/2``
 
@@ -180,13 +180,13 @@
 
 6. 经过整个研究流程，我认为每个环节都非常重要，包括想法、预处理、训练、验证、测试以及对出现的问题追根溯源并解决，科学研究不是单有idea就可以，而是各个阶段环环相扣、相互影响、缺一不可  
 
-## 未来工作建议
+# 未来工作建议
 
 1. 采用预训练词向量  
 
 2. encoder可采用``Resnet-101``或``Resnet-152``  
 
-## 附录
+# 附录
 
 - 参考
   1. [Karpathy's splits of MSCOCO](https://github.com/karpathy/neuraltalk2)  
