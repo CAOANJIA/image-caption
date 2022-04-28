@@ -124,7 +124,7 @@
      <table align="center">
          <tr>    <th rowspan="2">beam_size</th>    <th colspan="2" align="center">BLEU4</th>    <th colspan="2" align="center">METEOR</th>	</tr>
          <tr>    <th>w/o fine-tuning</th>    <th>w/ fine-tuning</th>    <th>w/o fine-tuning</th>    <th>w/ fine-tuning</th>	</tr>
-         <tr>    <td align="center">1</td>    <td align="center">28.18</td>    <td align="center">29.62</td>    <td align="center">28.25</td>    <td align="center">29.19</td>	</tr>
+         <tr>    <td align="center">1</td>    <td align="center">28.18</td>    <td align="center">29.62</td>    <td align="center"><strong>28.25</strong></td>    <td align="center"><strong>29.19</strong></td>	</tr>
          <tr>    <td align="center">2</td>    <td align="center">30.02</td>    <td align="center">31.71</td>    <td align="center">28.17</td>    <td align="center">29.16</td>	</tr>
          <tr>    <td align="center">3</td>    <td align="center"><strong>30.31</strong></td>    <td align="center">31.93</td>    <td align="center">27.92</td>    <td align="center">28.92</td>	</tr>
          <tr>    <td align="center">4</td>    <td align="center">30.04</td>    <td align="center"><strong>32.21</strong></td>    <td align="center">27.67</td>    <td align="center">28.75</td>	</tr>
