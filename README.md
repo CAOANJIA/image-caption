@@ -119,18 +119,16 @@
   |:-----:|:------:|
   | 24.3  | 23.90  |
 
-- 我的模型得分  
+- 我的模型得分    
   
-  1. BLEU4  
-     
      <table align="center">
-         <tr>    <th rowspan="2">beam_size</th>    <th colspan="2" align="center">BLEU4</th>    </tr>
-         <tr>    <th>w/o fine-tuning</th>    <th>w/ fine-tuning</th>    </tr>
-         <tr>    <td align="center">1</td>    <td align="center">28.18</td>    <td align="center">29.62</td>    </tr>
-         <tr>    <td align="center">2</td>    <td align="center">30.02</td>    <td align="center">31.17</td>    </tr>
-         <tr>    <td align="center">3</td>    <td align="center"><strong>30.31</strong></td>    <td align="center">31.93</td>    </tr>
-         <tr>    <td align="center">4</td>    <td align="center">30.04</td>    <td align="center"><strong>32.21</strong></td>    </tr>
-         <tr>    <td align="center">5</td>    <td align="center">30.19</td>    <td align="center">32.02</td>    </tr>
+         <tr>    <th rowspan="2">beam_size</th>    <th colspan="2" align="center">BLEU4</th>    <th colspan="2" align="center">METEOR</th>	</tr>
+         <tr>    <th>w/o fine-tuning</th>    <th>w/ fine-tuning</th>    <th>w/o fine-tuning</th>    <th>w/ fine-tuning</th>	</tr>
+         <tr>    <td align="center">1</td>    <td align="center">28.18</td>    <td align="center">29.62</td>    <td align="center">28.25</td>    <td align="center">29.19</td>	</tr>
+         <tr>    <td align="center">2</td>    <td align="center">30.02</td>    <td align="center">31.71</td>    <td align="center">28.17</td>    <td align="center">29.16</td>	</tr>
+         <tr>    <td align="center">3</td>    <td align="center"><strong>30.31</strong></td>    <td align="center">31.93</td>    <td align="center">27.92</td>    <td align="center">28.92</td>	</tr>
+         <tr>    <td align="center">4</td>    <td align="center">30.04</td>    <td align="center"><strong>32.21</strong></td>    <td align="center">27.67</td>    <td align="center">28.75</td>	</tr>
+         <tr>    <td align="center">5</td>    <td align="center">30.19</td>    <td align="center">32.02</td>    <td align="center">27.58</td>    <td align="center">28.63</td>	</tr>
      </table>
 
 ## visualization.py

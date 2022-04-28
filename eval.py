@@ -5,7 +5,11 @@ import torch.optim
 import torch.utils.data
 import torchvision.transforms as transforms
 import argparse
+import nltk
 from nltk.translate.bleu_score import corpus_bleu
+from nltk.translate.meteor_score import meteor_score
+from nltk.translate.meteor_score import single_meteor_score
+from itertools import chain
 from tqdm import tqdm
 from model_vgg19 import *
 
@@ -18,14 +22,18 @@ from dataloader import *
 def main(args):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     # cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
-
+    
+    # METEOR分数所需wordnet
+#     nltk.download('wordnet')
+#     nltk.download('omw-1.4')
+    
     # Load word map (word2ix)
     with open(args.word_map_file, 'r') as j:
         word_map = json.load(j)
     rev_word_map = {v: k for k, v in word_map.items()}
     vocab_size = len(word_map)
 
-    checkpoint = 'autodl-tmp/models/checkpoint_finetune_epoch_4.pth'
+    checkpoint = 'autodl-tmp/models/checkpoint_finetune_epoch_3.pth'
 
     # Load model
     checkpoint = torch.load(checkpoint)
@@ -44,20 +52,23 @@ def main(args):
     transform = transforms.Compose([
         transforms.Normalize(mean=(0.485, 0.456, 0.406),
                              std=(0.229, 0.224, 0.225))])
-    for beam_size in range(1, 5):
-        print("\nBLEU-4 score @ beam size of %d is %.4f." % (beam_size, evaluate(beam_size, encoder, decoder, transform, word_map)))
-    
+    for beam_size in range(1, 6):
+        bleu4, meteor = evaluate(beam_size, encoder, decoder, transform, word_map, rev_word_map)
+        print("\nBLEU-4 score @ beam size of %d is %.4f." % (beam_size, bleu4))
+        print("\nMETEOR score @ beam size of %d is %.4f." % (beam_size, meteor))
 
-def evaluate(beam_size, encoder, decoder, transform, word_map):
+def evaluate(beam_size, encoder, decoder, transform, word_map, rev_word_map):
     """
     Evaluation
     :param beam_size: beam size at which to generate captions for evaluation
-    :return: BLEU-4 score
+    :return: BLEU-4 score, METEOR
     """
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    
     # DataLoader
     loader = torch.utils.data.DataLoader(
         CaptionDataset(args.data_folder, args.data_name, 'TEST', transform=transform),
-        batch_size=1, shuffle=True, num_workers=1)
+        batch_size=1, shuffle=False, num_workers=4)
 
     # TODO: Batched Beam Search
     # Therefore, do not use a batch_size greater than 1 - IMPORTANT!
@@ -68,11 +79,15 @@ def evaluate(beam_size, encoder, decoder, transform, word_map):
     references = list()
     hypotheses = list()
     
+    meteor = 0.
     vocab_size = len(word_map)
     # For each image
     for i, (image, caps, caplens, allcaps) in enumerate(
             tqdm(loader, desc="EVALUATING AT BEAM SIZE " + str(beam_size))):
-
+        # 步长为5 一次性计算5个reference，1个hypo的METEOR分数，共5000个[reference, hypotheses]组合，累加，最后求算数平均即除以5000 
+        # BLEU4则是一次性计算整个语料库的corpus bleu-4
+        if i % 5 != 0:
+            continue
         k = beam_size
 
         # Move to GPU device, if available
@@ -176,16 +191,23 @@ def evaluate(beam_size, encoder, decoder, transform, word_map):
             map(lambda c: [w for w in c if w not in {word_map['<start>'], word_map['<end>'], word_map['<pad>']}],
                 img_caps))  # remove <start> and pads
         references.append(img_captions)
-
+        
         # Hypotheses
         hypotheses.append([w for w in seq if w not in {word_map['<start>'], word_map['<end>'], word_map['<pad>']}])
-
+        
         assert len(references) == len(hypotheses)
+        
+        ref = list(
+            map(lambda c: [rev_word_map[w] for w in c if w not in {word_map['<start>'], word_map['<end>'], word_map['<pad>']}],
+                img_caps))
+        hyp = [rev_word_map[w] for w in seq if w not in {word_map['<start>'], word_map['<end>'], word_map['<pad>']}]
+        for r in ref:
+            meteor += single_meteor_score(r, hyp)
 
     # Calculate BLEU-4 scores
     bleu4 = corpus_bleu(references, hypotheses)
 
-    return bleu4
+    return bleu4, meteor/25000
 
 
 if __name__ == '__main__':
