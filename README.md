@@ -49,11 +49,11 @@
 ## Pretrain
 
 - 优化器  
-    
+  
     ``Adam``，对于decoder我将前5个Epoch的``lr``设为``5e-4``，中间3个Epoch的``lr``设为``(5e-4)/2`` ，最后2个Epoch的``lr``设为``(5e-4)/4``  
     
 - 损失函数  
-    
+  
     ``loss = cross entropy + doubly stochastic regularization``（论文中的设定，鼓励模型既关注图像的每个部分又关注具体目标）
     
 - 验证部分  
@@ -65,11 +65,11 @@
      *E0: 19.68; E1: 21.07; E2: 21.69; E3: 22.00; E4: 22.26; E5: 22.67; E6: 22.76; E7: 22.74; E8: 22.78; **E9: 22.82***
 
 - 其他超参数  
-    
+  
     我将预训练轮数设为``10``个``Epoch``，``batch_size``设为``64``，LSTM的``hidden_size``设为``768``，``attention dim``设为``512``，``word embedding``维度设为``256``，``dropout``设为``0.5``
     
 - 训练时间  
-    
+  
     在单卡``NVIDIA RTX A5000``下，单精度训练一个Epoch约耗时33分钟
     
 - NOTE: 
@@ -89,19 +89,19 @@
 ## Fine-tune
 
 - 优化器  
-    
+  
     encoder和decoder均为``Adam``，``lr``均设为``1e-4``  
     
 - 验证部分  
-    
+  
   验证集BLEU4分数为：*E0: 23.15;  E1: 23.60;  E2: 23.65;  **E3: 23.82***  
-    
+  
 - 其余参数  
-    
+  
     我将微调轮数设为4个Epoch，且``lr``每个Epoch下降20%，``batch_size``设为``32``，其余与预训练相同
     
 - 训练时间  
-    
+  
     在单卡``NVIDIA RTX A5000``下，单精度训练一个Epoch约耗时70分钟
     
 - NOTE: 
@@ -111,13 +111,13 @@
 ## Evaluation
 
 - 方法  
-    
+  
     ``BeamSearch``, ``Autoregression``  
     
     <a name="eval"></a>
     
 - 指标  
-    
+  
     ``BLEU4``, ``METEOR``  
     
 - 原论文得分  
@@ -156,7 +156,11 @@
   2. 好的描述：描述出了黑猫  
 
      ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/good_train12102.png)
-
+     
+  2. 好的描述和关注区域：狗和飞盘的描述简洁且区域准确
+  
+     ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/good_train394.png)
+  
 - bad examples：  
   1. 不好的关注区域：关注了镜子中的婴儿  
 
