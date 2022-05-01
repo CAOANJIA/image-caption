@@ -2,9 +2,11 @@
 
 原文地址：[Show, Attend and Tell: Neural Image Caption Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)    
 
-<a href="#exp">有趣的例子</a>  
+<a href="#exp">有趣的例子</a>
 
-<a href="#eval">评价指标</a>  
+<a href="#eval">评价指标</a>
+
+<a href="#summary">总结</a>
 
 # 具体实现
 
@@ -108,25 +110,23 @@
   
   可以看到，经过4个Epoch，验证集BLEU4分数仍然呈现上升趋势，因此预计继续进行训练并调小``lr``可以获得更好的模型，但finetune耗时较久，因此我不再进行训练
 
-## Evaluation
+## Evaluation <a name="eval"></a>
 
 - 方法  
   
-    ``BeamSearch``, ``Autoregression``  
+    ``BeamSearch``, ``Autoregression``
     
-    <a name="eval"></a>
-    
-- 指标  
+- 指标
   
-    ``BLEU4``, ``METEOR``  
+    ``BLEU4``, ``METEOR``
     
-- 原论文得分  
+- 原论文得分
   
   | BLEU4 | METEOR |
   |:-----:|:------:|
   | 24.3  | 23.90  |
 
-- 我的模型得分    
+- 我的模型得分
   
      <table align="center">
          <tr>    <th rowspan="2">beam_size</th>    <th colspan="2" align="center">BLEU4</th>    <th colspan="2" align="center">METEOR</th>	</tr>
@@ -142,11 +142,9 @@
   1. BLEU4指标，求语料库级别的BLEU4分数
   2. METEOR指标，对于每1个`hypothesis`，求其与对应的5个`reference`的得分的平均值，再对全部得分求算术平均
 
-## Visualization
+## Visualization <a name="exp"></a>
 
-- 可视化，显示每个时间步的attention区域  
-
-  <a name="exp"></a>
+- 可视化，显示每个时间步的attention区域
 
 - good examples：  
   1. 好的关注区域：在对应的时间步正确地关注了dog和toilet  
@@ -171,7 +169,7 @@
      ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/bad_train8549.png)
 
   
-# 结果
+# 结果 <a name="summary"></a>
 
 - 在不微调Encoder的情况下模型在测试集上的BLEU4得分高于原论文，这可能是因为我采用了``scaled-dot-product attention``，并对数据做了简单的预处理
 
