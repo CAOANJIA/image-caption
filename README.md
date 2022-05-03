@@ -4,9 +4,11 @@
 
 <a href="#exp">有趣的例子</a>
 
-<a href="#eval">评价指标</a>
+<a href="#eval">评价指标得分</a>
 
-<a href="#summary">总结</a>
+<a href="#summary">个人总结</a>
+
+[下载我的模型](https://github.com/CAOANJIA/show-attend-and-tell/releases/tag/version1.0-alpha)
 
 # 具体实现
 
