@@ -2,6 +2,7 @@ import torch
 import torch.nn.functional as F
 import numpy as np
 import json
+import os
 import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
@@ -82,13 +83,15 @@ def caption_image_beam_search(encoder, decoder, image_path, word_map, beam_size=
     img = img / 255.
     img = torch.FloatTensor(img).to(device)
 
-    normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                     std=[0.229, 0.224, 0.225])
+    normalize = transforms.Normalize(mean=(0.485, 0.456, 0.406),
+                                     std=(0.229, 0.224, 0.225))
     transform = transforms.Compose([normalize])
+
     image = transform(img)  # (3, 256, 256)
 
     # Encode
     image = image.unsqueeze(0)  # (1, 3, 256, 256)
+
     encoder_out = encoder(image)  # (1, enc_image_size, enc_image_size, encoder_dim)
     enc_image_size = encoder_out.size(1)
     encoder_dim = encoder_out.size(3)
@@ -225,6 +228,7 @@ def visualize_att(image_path, seq, alphas, rev_word_map, smooth=True):
             plt.imshow(alpha, alpha=0.8)
         plt.set_cmap(cm.Greys_r)
         plt.axis('off')
+    plt.savefig(os.path.join(args.save_path, '12102.png'), dpi=1080)
     plt.show()
 
 
@@ -232,13 +236,13 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Show, Attend, and Tell - Tutorial - Generate Caption')
 
     parser.add_argument('--img', '-i',
-                        default='D:/datasets/coco/images/train2014/COCO_train2014_000000000081.jpg', help='path to image')
+                        default='D:/datasets/coco/images/train2014/COCO_train2014_000000012102.jpg', help='path to image')
     parser.add_argument('--model', '-m',
                         default='D:/models/Show, Attend and Tell/checkpoint_finetune_epoch_3.pth', help='path to model')
     parser.add_argument('--word_map', '-wm',
                         default='D:/datasets/coco/images/WORDMAP_coco_5_cap_per_img_5_min_word_freq.json', help='path to word map JSON')
     parser.add_argument('--beam_size', '-b', default=4, type=int, help='beam size for beam search')
     parser.add_argument('--dont_smooth', dest='smooth', action='store_false', help='do not smooth alpha overlay')
-
+    parser.add_argument('--save_path', default='D:/', help='img save path')
     args = parser.parse_args()
     main(args)
