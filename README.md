@@ -2,13 +2,13 @@
 
 原文地址：[Show, Attend and Tell: Neural Image Caption Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)    
 
-<a href="#exp">有趣的例子</a>
+🎈<a href="#exp">有趣的例子</a>
 
-<a href="#eval">评价指标得分</a>
+🏆<a href="#eval">评价指标得分</a>
 
-<a href="#summary">个人总结</a>
+🔍<a href="#summary">个人总结</a>
 
-[下载我的模型](https://github.com/CAOANJIA/show-attend-and-tell/releases/tag/version1.0-alpha)
+😊[下载我的模型](https://github.com/CAOANJIA/show-attend-and-tell/releases/tag/version1.0-alpha)
 
 # 具体实现
 
@@ -170,7 +170,6 @@
 
      ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/bad_train8549.png)
 
-  
 # 结果 <a name="summary"></a>
 
 - 在不微调Encoder的情况下模型在测试集上的BLEU4得分高于原论文，这可能是因为我采用了``scaled-dot-product attention``，并对数据做了简单的预处理
