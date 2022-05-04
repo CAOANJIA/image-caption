@@ -150,27 +150,18 @@
 
 - good examples：  
   
-  好的关注区域：在对应的时间步正确地关注了dog和toilet  
+  好的关注区域：在对应的时间步正确地关注了dog和toilet![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/1622.png)
   
-  ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/1622.png)
+  好的描述：描述出了黑猫![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/12102.png)
   
-  好的描述：描述出了黑猫  
-  
-  ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/12102.png)
-  
-  好的描述和关注区域：狗和飞盘的描述简洁且区域准确
-  
-  ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/394.png)
+  好的描述和关注区域：狗和飞盘的描述简洁且区域准确![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/394.png)
   
 - bad examples：  
   
-  不好的关注区域：关注了镜子中的婴儿  
+  不好的关注区域：关注了镜子中的婴儿![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/1790.png)
   
-  ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/1790.png)
+  不好的描述：将大象的脚描述成了鞋子![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/8549.png)
   
-  不好的描述：将大象的脚描述成了鞋子  
-  
-  ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/8549.png)
 
 # 结果 <a name="summary"></a>
 
