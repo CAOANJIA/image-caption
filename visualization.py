@@ -228,7 +228,7 @@ def visualize_att(image_path, seq, alphas, rev_word_map, smooth=True):
             plt.imshow(alpha, alpha=0.8)
         plt.set_cmap(cm.Greys_r)
         plt.axis('off')
-    plt.savefig(os.path.join(args.save_path, '12102.png'), dpi=1080)
+    plt.savefig(os.path.join(args.save_path, '166995.png'), dpi=600)
     plt.show()
 
 
@@ -236,12 +236,12 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Show, Attend, and Tell - Tutorial - Generate Caption')
 
     parser.add_argument('--img', '-i',
-                        default='D:/datasets/coco/images/train2014/COCO_train2014_000000012102.jpg', help='path to image')
+                        default='D:/datasets/coco/images/val2014/COCO_val2014_000000166995.jpg', help='path to image')
     parser.add_argument('--model', '-m',
-                        default='D:/models/Show, Attend and Tell/checkpoint_finetune_epoch_3.pth', help='path to model')
+                        default='D:/models/Show, Attend and Tell/checkpoint_finetune_epoch_4.pth', help='path to model')
     parser.add_argument('--word_map', '-wm',
                         default='D:/datasets/coco/images/WORDMAP_coco_5_cap_per_img_5_min_word_freq.json', help='path to word map JSON')
-    parser.add_argument('--beam_size', '-b', default=4, type=int, help='beam size for beam search')
+    parser.add_argument('--beam_size', '-b', default=3, type=int, help='beam size for beam search')
     parser.add_argument('--dont_smooth', dest='smooth', action='store_false', help='do not smooth alpha overlay')
     parser.add_argument('--save_path', default='D:/', help='img save path')
     args = parser.parse_args()

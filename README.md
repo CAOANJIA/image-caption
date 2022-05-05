@@ -104,7 +104,7 @@
   
 - 其余参数
   
-    我将微调轮数设为6个Epoch，``batch_size``设为``32``，其余与预训练相同
+    我将微调轮数设为5个Epoch，``batch_size``设为``32``，其余与预训练相同
     
 - 训练时间
   
@@ -112,7 +112,7 @@
     
 - NOTE: 
   
-  可以看到，经过6个Epoch，验证集BLEU4分数仍然呈现上升趋势，因此预计继续进行训练并调小``lr``可以获得更好的模型，但finetune耗时较久，因此我不再进行训练
+  可以看到，经过5个Epoch，验证集BLEU4分数仍然呈现上升趋势，因此预计继续进行训练并调小``lr``可以获得更好的模型，但finetune耗时较久，因此我不再进行训练
 
 ## Evaluation <a name="eval"></a>
 
@@ -140,29 +140,29 @@
              	<th>w/ fine-tuning</th>	</tr>
          <tr>    <td align="center">1</td>    
              	<td align="center">28.18</td>    
-             	<td align="center">29.82</td>    
+             	<td align="center">29.66</td>    
           	<td align="center"><strong>28.25</strong></td>    
-          	<td align="center">29.43</td>	</tr>
+          	<td align="center">29.42</td>	</tr>
       <tr>    <td align="center">2</td>    
           	<td align="center">30.02</td>    
-          	<td align="center">31.88</td>    
+          	<td align="center">32.14</td>    
           	<td align="center">28.17</td>    
-          	<td align="center"><strong>29.45</strong></td>	</tr>
+          	<td align="center"><strong>29.50</strong></td>	</tr>
       <tr>    <td align="center">3</td>    
           	<td align="center"><strong>30.31</strong></td>    
-          	<td align="center"><strong>32.07</strong></td>    
+          	<td align="center"><strong>32.18</strong></td>    
           	<td align="center">27.92</td>    
-          	<td align="center">29.11</td>	</tr>
+          	<td align="center">29.24</td>	</tr>
       <tr>    <td align="center">4</td>    
           	<td align="center">30.04</td>    
-          	<td align="center">31.98</td>   
+          	<td align="center">31.93</td>   
           	<td align="center">27.67</td>   
-          	<td align="center">28.80</td>	</tr>
+          	<td align="center">28.96</td>	</tr>
       <tr>    <td align="center">5</td>   
           	<td align="center">30.19</td>   
-          	<td align="center">31.84</td>  
+          	<td align="center">31.80</td>  
           	<td align="center">27.58</td>   
-          	<td align="center">28.69</td>	</tr>
+          	<td align="center">28.85</td>	</tr>
   </table>
   
 - NOTE: 
@@ -175,17 +175,17 @@
 
 - good examples：
   
-  1. 好的关注区域：在对应的时间步正确地关注了dog和toilet![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/1622.png)
+  ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/395.png)
   
-  2. 好的描述：描述出了黑猫![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/12102.png)
+  ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/164005.png)
   
-  3. 好的描述和关注区域：狗和飞盘的描述简洁且区域准确![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/394.png)
+  ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/10693.png)
+  
+  ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/166995.png)
   
 - bad examples：
   
-  1. 不好的关注区域：关注了镜子中的婴儿![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/1790.png)
-  
-  2. 不好的描述：将大象的脚描述成了鞋子![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/8549.png)
+  ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/194306.png)
 
 # 结果 <a name="summary"></a>
 
@@ -193,7 +193,7 @@
 
 - 在微调Encoder后模型得分普遍更高
 
-- 无论是否微调，``beam_size``增加时BLEU分数先增加再减小,1到2时分数提升较明显，在3时达到最高（不微调达到30.31），在4到5时变得不稳定
+- 无论是否微调，``beam_size``增加时BLEU分数先增加再减小,1到2时分数提升较明显，在3时达到最高（不微调达到30.31，微调达到32.18），在4到5时变得不稳定
 
 - 值得注意的是，虽然模型在验证集上以``teacher forcing``生成的文本BLEU4分数并不算高，但是在测试集上以``autoregression``生成的表现却令人满意
 
