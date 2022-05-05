@@ -142,12 +142,12 @@
              	<td align="center">28.18</td>    
              	<td align="center">29.82</td>    
           	<td align="center"><strong>28.25</strong></td>    
-          	<td align="center"><strong>29.43</strong></td>	</tr>
+          	<td align="center">29.43</td>	</tr>
       <tr>    <td align="center">2</td>    
           	<td align="center">30.02</td>    
           	<td align="center">31.88</td>    
           	<td align="center">28.17</td>    
-          	<td align="center">29.45</td>	</tr>
+          	<td align="center"><strong>29.45</strong></td>	</tr>
       <tr>    <td align="center">3</td>    
           	<td align="center"><strong>30.31</strong></td>    
           	<td align="center"><strong>32.07</strong></td>    
