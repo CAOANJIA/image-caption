@@ -2,7 +2,7 @@
 
 原文地址：[Show, Attend and Tell: Neural Image Caption Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)    
 
-🎈<a href="#exp">有趣的例子</a>
+🎈<a href="#exp">一些有趣的例子</a>
 
 🏆<a href="#eval">评价指标得分</a>
 
