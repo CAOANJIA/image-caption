@@ -177,9 +177,15 @@
   
   ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/395.png)
   
+  ------
+  
   ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/164005.png)
   
+  ------
+  
   ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/10693.png)
+  
+  ------
   
   ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/166995.png)
   
