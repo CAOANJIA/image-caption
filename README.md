@@ -8,7 +8,7 @@
 
 🔍<a href="#summary">个人总结</a>
 
-😊[下载我的模型](https://github.com/CAOANJIA/show-attend-and-tell/releases/tag/version1.0-alpha)
+😊[下载我的模型](https://github.com/CAOANJIA/show-attend-and-tell/releases/tag/version1.0.0)
 
 # 具体实现
 
