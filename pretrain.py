@@ -54,6 +54,12 @@ def main(args):
 
     print('start training...')
     for epoch in range(args.epochs):
+        if epoch == 5:
+            decoder_optimizer = opt.Adam(params=filter(lambda p: p.requires_grad, decoder.parameters()),
+                                         lr=args.decoder_lr/2)
+        if epoch == 8:
+            decoder_optimizer = opt.Adam(params=filter(lambda p: p.requires_grad, decoder.parameters()),
+                                         lr=args.decoder_lr/4)
         train(train_loader, encoder, decoder, encoder_optimizer, decoder_optimizer, criterion, epoch, args.print_step)
         bleu_4 = val(val_loader, encoder, decoder, criterion, args.print_step, word_map)
         is_best = bleu_4 > best_bleu4

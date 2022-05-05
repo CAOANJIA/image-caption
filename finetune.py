@@ -201,7 +201,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--num_workers', type=int, default=4, help='num workers')
     parser.add_argument('--batch_size', type=int, default=32, help='batch size')
-    parser.add_argument('--epochs', type=int, default=4, help='epochs')
+    parser.add_argument('--epochs', type=int, default=6, help='epochs')
     parser.add_argument('--encoder_lr', type=float, default=1e-4, help='lr of decoder')
     parser.add_argument('--decoder_lr', type=float, default=1e-4, help='lr of decoder')
     parser.add_argument('--dropout', type=float, default=0.5, help='dropout')
