@@ -1,18 +1,18 @@
 # 论文"Show, Attend and Tell"的PyTorch实现及改进
 
+[TOC]
+
 原文地址：[Show, Attend and Tell: Neural Image Caption Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)    
 
 🎈<a href="#exp">一些有趣的例子</a>
 
-🏆<a href="#eval">评价指标得分</a>
-
-🔍<a href="#summary">个人总结</a>
-
 😊[下载我的模型](https://github.com/CAOANJIA/show-attend-and-tell/releases/tag/version1.0.0)
 
-# 具体实现
 
-## Model
+
+## 具体实现
+
+### Model
 
 - **模型总览**  
 
@@ -50,7 +50,7 @@
   
   每轮``LSTMCell``的迭代都需要做一次attention，可认为是当前序列所注意的图像区域  
 
-## Pretrain
+### Pretrain
 
 - 优化器  
   
@@ -90,7 +90,7 @@
   
   3. 一开始我尝试了多种lr并尝试微调``VGG``，训练效果不佳，我猜测是因为简单地resize图像至``3x224x224``，因此我利用``PIL.Image``对图像重新预处理（利用``crop``和``ANTIALIAS``）
 
-## Fine-tune
+### Fine-tune
 
 - 优化器
   
@@ -116,7 +116,7 @@
   
   可以看到，经过6个Epoch，验证集BLEU4分数仍然呈现上升趋势，但趋势减缓严重，因此为了防止过拟合，我不再进行训练，经过比较，模型E4的确表现比E5好，验证了我的想法
 
-## Evaluation <a name="eval"></a>
+### Evaluation <a name="eval"></a>
 
 - 方法
   
@@ -171,7 +171,7 @@
   1. BLEU4指标，求语料库级别的BLEU4分数
   2. METEOR指标，对于每1个`hypothesis`，求其与对应的5个`reference`的得分的平均值，再对全部得分求算术平均
 
-## Visualization <a name="exp"></a>
+### Visualization <a name="exp"></a>
 
 - 可视化，显示每个时间步的attention区域
 
@@ -203,7 +203,7 @@
   
   ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/194306.png)
 
-# 结果 <a name="summary"></a>
+## 结果 <a name="summary"></a>
 
 - 在不微调Encoder的情况下模型在测试集上的BLEU4得分高于原论文，这可能是因为我采用了``scaled-dot-product attention``，并对数据做了简单的预处理
 
@@ -213,7 +213,7 @@
 
 - 值得注意的是，虽然模型在验证集上以``teacher forcing``生成的文本BLEU4分数并不算高，但是在测试集上以``autoregression``生成的表现却令人满意
 
-# 实验心得与经验
+## 实验心得与经验
 
 1. 优化器、学习率的重要性：学习率不应太大也不应太小，太大很难收敛，太小训练较慢，我在实验中曾尝试了~~Adadelta（lr为1e-3和1e-2）~~和~~Adam（lr为1e-2，1e-3和1e-4）~~，效果均不够理想，最终选择了``Adam``，对于pretrain阶段，将前5个epoch的``lr``设为``5e-4`` ，中间3个epoch设为``(5e-4)/2``，最后2个epoch设为``(5e-4)/4``，finetune阶段则设置初始``lr``为``1e-4``，每个epoch递减20%
 
@@ -227,13 +227,13 @@
 
 6. 经过整个研究流程，我认为每个环节都非常重要，包括想法、预处理、训练、验证、测试以及对出现的问题追根溯源并解决，科学研究不是单有idea就可以，而是各个阶段环环相扣、相互影响、缺一不可
 
-# 未来工作建议
+## 未来工作建议
 
 1. 采用预训练词向量
 2. encoder可采用``Resnet-101``或``Resnet-152``
 2. 选择更好的参数初始化方法
 
-# 附录
+## 附录
 
 - 参考
   1. [Karpathy's splits of MSCOCO](https://github.com/karpathy/neuraltalk2)  
