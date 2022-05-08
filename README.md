@@ -6,6 +6,10 @@
 
 🎈<a href="#exp">一些有趣的例子</a>
 
+🔍<a href="#eval">评价指标</a>
+
+✒<a href="#summary">个人总结</a>
+
 😊[下载我的模型](https://github.com/CAOANJIA/show-attend-and-tell/releases/tag/version1.0.0)
 
 
