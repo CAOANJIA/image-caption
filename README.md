@@ -2,7 +2,7 @@
 
 [TOC]
 
-原文地址：[Show, Attend and Tell: Neural Image Caption Generation with Visual Attention](https://arxiv.org/pdf/1502.03044v2.pdf)    
+Xu, Kelvin, et al. "Show, attend and tell: Neural image caption generation with visual attention." *International conference on machine learning*. PMLR, 2015. [[pdf](http://proceedings.mlr.press/v37/xuc15.pdf)]    
 
 🎈<a href="#exp">一些有趣的例子</a>
 
