@@ -1,8 +1,8 @@
-# 论文"Show, Attend and Tell"的PyTorch实现及改进
+# Image Caption
 
-[TOC]
+目标：给定图像输入，采用跨模态注意力机制，指导模型关注对应图像区域，从而得到内容描述，并可视化注意力区域。
 
-Xu, Kelvin, et al. "Show, attend and tell: Neural image caption generation with visual attention." *International conference on machine learning*. PMLR, 2015. [[pdf](http://proceedings.mlr.press/v37/xuc15.pdf)]    
+
 
 🎈<a href="#exp">一些有趣的例子</a>
 
@@ -10,7 +10,9 @@ Xu, Kelvin, et al. "Show, attend and tell: Neural image caption generation with 
 
 ✒<a href="#summary">个人总结</a>
 
-😊[下载我的模型](https://github.com/CAOANJIA/show-attend-and-tell/releases/tag/version1.0.0)
+😀[下载我的模型](https://github.com/CAOANJIA/show-attend-and-tell/releases/tag/version1.0.0)
+
+📖<a href="#reference">参考文献</a>
 
 
 
@@ -207,6 +209,8 @@ Xu, Kelvin, et al. "Show, attend and tell: Neural image caption generation with 
   
   ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/194306.png)
 
+
+
 ## 结果 <a name="summary"></a>
 
 - 在不微调Encoder的情况下模型在测试集上的BLEU4得分高于原论文，这可能是因为我采用了``scaled-dot-product attention``，并对数据做了简单的预处理
@@ -216,6 +220,8 @@ Xu, Kelvin, et al. "Show, attend and tell: Neural image caption generation with 
 - 无论是否微调，``beam_size``增加时BLEU分数先增加再减小,1到2时分数提升较明显，在3时达到最高（不微调达到30.31，微调达到32.18），在4到5时变得不稳定
 
 - 值得注意的是，虽然模型在验证集上以``teacher forcing``生成的文本BLEU4分数并不算高，但是在测试集上以``autoregression``生成的表现却令人满意
+
+
 
 ## 实验心得与经验
 
@@ -231,11 +237,21 @@ Xu, Kelvin, et al. "Show, attend and tell: Neural image caption generation with 
 
 6. 经过整个研究流程，我认为每个环节都非常重要，包括想法、预处理、训练、验证、测试以及对出现的问题追根溯源并解决，科学研究不是单有idea就可以，而是各个阶段环环相扣、相互影响、缺一不可
 
+
+
 ## 未来工作建议
 
 1. 采用预训练词向量
 2. encoder可采用``Resnet-101``或``Resnet-152``
-2. 选择更好的参数初始化方法
+3. 选择更好的参数初始化方法
+
+
+
+## 引用<a name="reference"></a>
+
+Xu, Kelvin, et al. "Show, attend and tell: Neural image caption generation with visual attention." *International conference on machine learning*. PMLR, 2015. [[pdf](http://proceedings.mlr.press/v37/xuc15.pdf)]    
+
+
 
 ## 附录
 
