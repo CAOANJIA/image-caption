@@ -1,8 +1,10 @@
 # Image Caption
 
-目标：给定图像输入，采用跨模态注意力机制，指导模型关注对应图像区域，从而得到内容描述，并可视化注意力区域。
+**目标：给定图像输入，采用跨模态注意力机制，指导模型关注图像的对应区域，从而得到合理的内容描述，并通过可视化注意力区域证明模型关注了正确的图像区域。**
 
 
+
+📖<a href="#reference">参考文献</a>
 
 🎈<a href="#exp">一些有趣的例子</a>
 
@@ -11,8 +13,6 @@
 ✒<a href="#summary">个人总结</a>
 
 😀[下载我的模型](https://github.com/CAOANJIA/show-attend-and-tell/releases/tag/version1.0.0)
-
-📖<a href="#reference">参考文献</a>
 
 
 
@@ -38,7 +38,7 @@
   
   3. 采用``dropout``避免过拟合  
 
-- **Attention**: ``scaled dot-product attention``  （与论文中不同）
+- **Attention**: ``scaled dot-product attention``  （与参考论文中不同）
   
   1. 利用``hidden state``经过``fc``层获得``Query``，feature map经过2个不同的fc层获得``Key``和``Value``，  
      
@@ -132,7 +132,7 @@
   
     ``BLEU4``, ``METEOR``
     
-- 原论文得分
+- 参考论文得分
   
   | BLEU4 | METEOR |
   |:-----:|:------:|
@@ -175,7 +175,7 @@
   
 - NOTE: 
   1. BLEU4指标，求语料库级别的BLEU4分数
-  2. METEOR指标，对于每1个`hypothesis`，求其与对应的5个`reference`的得分的平均值，再对全部得分求算术平均
+  2. METEOR指标，对于每1个`hypothesis`，求其与对应的5个`reference`的得分的平均值，再对全部得分求算术平均（算数平均的计算方法可能不是标准方法，若不正确请指正）
 
 ### Visualization <a name="exp"></a>
 
