@@ -257,9 +257,9 @@
 
 ## 引用<a name="reference"></a>
 
-Xu, Kelvin, et al. "Show, attend and tell: Neural image caption generation with visual attention." *International conference on machine learning*. PMLR, 2015. [[pdf](http://proceedings.mlr.press/v37/xuc15.pdf)]    
+> [1] Xu, Kelvin, et al. "Show, attend and tell: Neural image caption generation with visual attention." *International conference on machine learning*. PMLR, 2015.
 
-
+> [2] Vaswani, Ashish, et al. "Attention is all you need." *Advances in neural information processing systems* 30 (2017).
 
 ## 附录
 
