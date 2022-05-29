@@ -4,7 +4,7 @@
 
 
 
-📖<a href="#reference">参考文献</a>
+📖<a href="#refer-id">参考文献</a>
 
 🎈<a href="#exp">一些有趣的例子</a>
 
@@ -22,15 +22,15 @@
 
 - **模型总览**  
 
-  采用Encoder-Decoder架构和跨模态Attention机制  。
+  采用Encoder-Decoder架构和跨模态Attention机制，参考[<sup>1</sup>](#refer-id)。
 
-- **Encoder**: ``VGG19``
+- **Encoder**: ``VGG19``[<sup>2</sup>](#refer-id)
   
   1. 使用``torchvision.models``中在``ImageNet``上预训练好的模型  。
   
   2. 去除``fc``层和最后一个``maxpool``层，即输出为``14x14x512``的特征图  。
 
-- **Decoder**: ``LSTM``  
+- **Decoder**: ``LSTM``[<sup>3</sup>](#refer-id)
   
   1. ``h0``和``c0``利用encoder输出的特征图初始化  。
   
@@ -38,7 +38,7 @@
   
   3. 采用``dropout``避免过拟合  。
 
-- **Attention**: ``scaled dot-product attention``  （与参考论文中不同）
+- **Attention**: ``scaled dot-product attention``[<sup>4</sup>](#refer-id)
   
   1. 利用``hidden state``经过``fc``层获得``Query``，feature map经过2个不同的fc层获得``Key``和``Value``，  
      
@@ -257,11 +257,15 @@
 
 
 
-## 引用<a name="reference"></a>
+## 引用<div id="refer-id"></div>
 
 > [1] Xu, Kelvin, et al. "Show, attend and tell: Neural image caption generation with visual attention." *International conference on machine learning*. PMLR, 2015.
-
-> [2] Vaswani, Ashish, et al. "Attention is all you need." *Advances in neural information processing systems* 30 (2017).
+>
+> [2] Simonyan, Karen, and Andrew Zisserman. "Very deep convolutional networks for large-scale image recognition." *arXiv preprint arXiv:1409.1556* (2014).
+>
+> [3] Hochreiter, Sepp, and Jürgen Schmidhuber. "Long short-term memory." *Neural computation* 9.8 (1997): 1735-1780.
+>
+> [4] Vaswani, Ashish, et al. "Attention is all you need." *Advances in neural information processing systems* 30 (2017).
 
 ## 附录
 
