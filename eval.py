@@ -5,28 +5,22 @@ import torch.optim
 import torch.utils.data
 import torchvision.transforms as transforms
 import argparse
-import nltk
 from nltk.translate.bleu_score import corpus_bleu
-from nltk.translate.meteor_score import meteor_score
 from nltk.translate.meteor_score import single_meteor_score
-from itertools import chain
 from tqdm import tqdm
 from model_vgg19 import *
 
 from dataloader import *
 
 
-# import torch.backends.cudnn as cudnn
-
 
 def main(args):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    # cudnn.benchmark = True  # set to true only if inputs to model are fixed size; otherwise lot of computational overhead
-    
+
     # METEOR分数所需wordnet
-#     nltk.download('wordnet')
-#     nltk.download('omw-1.4')
-    
+    #     nltk.download('wordnet')
+    #     nltk.download('omw-1.4')
+
     # Load word map (word2ix)
     with open(args.word_map_file, 'r') as j:
         word_map = json.load(j)
@@ -57,6 +51,7 @@ def main(args):
         print("\nBLEU-4 score @ beam size of %d is %.4f." % (beam_size, bleu4))
         print("\nMETEOR score @ beam size of %d is %.4f." % (beam_size, meteor))
 
+
 def evaluate(beam_size, encoder, decoder, transform, word_map, rev_word_map):
     """
     Evaluation
@@ -64,7 +59,7 @@ def evaluate(beam_size, encoder, decoder, transform, word_map, rev_word_map):
     :return: BLEU-4 score, METEOR
     """
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    
+
     # DataLoader
     loader = torch.utils.data.DataLoader(
         CaptionDataset(args.data_folder, args.data_name, 'TEST', transform=transform),
@@ -78,111 +73,92 @@ def evaluate(beam_size, encoder, decoder, transform, word_map, rev_word_map):
     # references = [[ref1a, ref1b, ref1c], [ref2a, ref2b], ...], hypotheses = [hyp1, hyp2, ...]
     references = list()
     hypotheses = list()
-    
+
     meteor = 0.
     vocab_size = len(word_map)
     # For each image
     for i, (image, caps, caplens, allcaps) in enumerate(
             tqdm(loader, desc="EVALUATING AT BEAM SIZE " + str(beam_size))):
-        # 步长为5 一次性计算5个reference，1个hypo的METEOR分数，共5000个[reference, hypotheses]组合，累加，最后求算数平均即除以5000 
+        # 步长为5 一次性计算5个reference，1个hypo的METEOR分数，共5000个[reference, hypotheses]组合，累加，最后求算数平均即除以5000
         # BLEU4则是一次性计算整个语料库的corpus bleu-4
         if i % 5 != 0:
             continue
         k = beam_size
 
-        # Move to GPU device, if available
-        image = image.to(device)  # (1, 3, 256, 256)
+        image = image.to(device)  # (1, 3, 224, 224)
 
-        # Encode
-        encoder_out = encoder(image)  # (1, enc_image_size, enc_image_size, encoder_dim)
-        enc_image_size = encoder_out.size(1)
+        encoder_out = encoder(image)                                    # [1, 14, 14, encoder_dim]
+
         encoder_dim = encoder_out.size(3)
 
-        # Flatten encoding
-        encoder_out = encoder_out.view(1, -1, encoder_dim)  # (1, num_pixels, encoder_dim)
+        encoder_out = encoder_out.view(1, -1, encoder_dim)              # [1, num_pixels, encoder_dim]
         num_pixels = encoder_out.size(1)
 
-        # We'll treat the problem as having a batch size of k
-        encoder_out = encoder_out.expand(k, num_pixels, encoder_dim)  # (k, num_pixels, encoder_dim)
+        encoder_out = encoder_out.expand(k, num_pixels, encoder_dim)    # [k, num_pixels, encoder_dim] 保留最大的k个
 
-        # Tensor to store top k previous words at each step; now they're just <start>
-        k_prev_words = torch.LongTensor([[word_map['<start>']]] * k).to(device)  # (k, 1)
+        k_prev_words = torch.LongTensor([[word_map['<start>']]] * k).to(device)     # [k, 1] 加入start
+        seqs = k_prev_words                                                         # [k, 1]
 
-        # Tensor to store top k sequences; now they're just <start>
-        seqs = k_prev_words  # (k, 1)
+        top_k_scores = torch.zeros(k, 1).to(device)                                 # [k, 1] 初始化为0 全局累计最大的k个值
 
-        # Tensor to store top k sequences' scores; now they're just 0
-        top_k_scores = torch.zeros(k, 1).to(device)  # (k, 1)
-
-        # Lists to store completed sequences and scores
         complete_seqs = list()
         complete_seqs_scores = list()
 
-        # Start decoding
         step = 1
         h, c = decoder.init_h_c(encoder_out)
 
         # s is a number less than or equal to k, because sequences are removed from this process once they hit <end>
         while True:
 
-            embeddings = decoder.embedding(k_prev_words).squeeze(1)  # (s, embed_dim)
+            embeddings = decoder.embedding(k_prev_words).squeeze(1)     # [s, embed_dim]
 
-            awe, _ = decoder.attention(encoder_out, h)  # (s, encoder_dim), (s, num_pixels)
+            att_out, _ = decoder.attention(encoder_out, h)              # [s, num_pixels]
 
-            gate = decoder.sigmoid(decoder.f_beta(h))  # gating scalar, (s, encoder_dim)
-            awe = gate * awe
+            beta = decoder.sigmoid(decoder.f_beta(h))
+            att_out = beta * att_out
 
-            h, c = decoder.decode_step(torch.cat([embeddings, awe], dim=1), (h, c))  # (s, decoder_dim)
+            h, c = decoder.decode_step(torch.cat([embeddings, att_out], dim=1), (h, c))  # [s, decoder_dim]
 
-            scores = decoder.fc(h)  # (s, vocab_size)
+            scores = decoder.fc(h)                                      # [s, vocab_size]
             scores = F.log_softmax(scores, dim=1)
 
             # Add
-            scores = top_k_scores.expand_as(scores) + scores  # (s, vocab_size)
+            scores = top_k_scores.expand_as(scores) + scores            # [s, vocab_size] 因为可能出现了end s在变动
 
-            # For the first step, all k points will have the same scores (since same k previous words, h, c)
             if step == 1:
-                top_k_scores, top_k_words = scores[0].topk(k, 0, True, True)  # (s)
+                top_k_scores, top_k_words = scores[0].topk(k, 0, True, True)        # [s]
             else:
-                # Unroll and find top scores, and their unrolled indices
-                top_k_scores, top_k_words = scores.view(-1).topk(k, 0, True, True)  # (s)
+                top_k_scores, top_k_words = scores.view(-1).topk(k, 0, True, True)  # [s]
 
-            # Convert unrolled indices to actual indices of scores
-            prev_word_inds = top_k_words / vocab_size  # (s)
-            next_word_inds = top_k_words % vocab_size  # (s)
-            
-#             print(seqs[prev_word_inds].type())
-#             print(next_word_inds.unsqueeze(1).type())
-            # Add new words to sequences
-            seqs = torch.cat([seqs[prev_word_inds.long()], next_word_inds.unsqueeze(1)], dim=1)  # (s, step+1)
+            prev_word_inds = top_k_words / vocab_size  # [s] 得到的tensor 表示上一个词来自第几个beam 因为view(-1)过 seq[prev]即可获得上一个词
+            next_word_inds = top_k_words % vocab_size  # [s] 得到的tensor 表示是具体哪个词
 
-            # Which sequences are incomplete (didn't reach <end>)?
+            seqs = torch.cat([seqs[prev_word_inds.long()], next_word_inds.unsqueeze(1)], dim=1) # [s, step+1] 前后相连
+
             incomplete_inds = [ind for ind, next_word in enumerate(next_word_inds) if
-                               next_word != word_map['<end>']]
-            complete_inds = list(set(range(len(next_word_inds))) - set(incomplete_inds))
+                               next_word != word_map['<end>']]                                  # 还可以继续生成的句子的beam下标
+            complete_inds = list(set(range(len(next_word_inds))) - set(incomplete_inds))        # 已结束句子的beam下标
 
-            # Set aside complete sequences
+            # 如果有已经结束的句子 那就将句子和分数加入complete_seqs 和 complete_seqs_scores 且减少beam_size
             if len(complete_inds) > 0:
                 complete_seqs.extend(seqs[complete_inds].tolist())
                 complete_seqs_scores.extend(top_k_scores[complete_inds])
-            k -= len(complete_inds)  # reduce beam length accordingly
+            k -= len(complete_inds)
 
-            # Proceed with incomplete sequences
             if k == 0:
                 break
-            seqs = seqs[incomplete_inds]
-            h = h[prev_word_inds[incomplete_inds].long()]
+            seqs = seqs[incomplete_inds]                                        # 未完成部分 seqs只需按序保留
+            h = h[prev_word_inds[incomplete_inds].long()]                       # 而h需要保留生成者 因为top_k后的顺序和上一个h顺序不同 不对应
             c = c[prev_word_inds[incomplete_inds].long()]
             encoder_out = encoder_out[prev_word_inds[incomplete_inds].long()]
             top_k_scores = top_k_scores[incomplete_inds].unsqueeze(1)
             k_prev_words = next_word_inds[incomplete_inds].unsqueeze(1)
 
-            # Break if things have been going on too long
             if step > 50:
                 break
             step += 1
 
-        i = complete_seqs_scores.index(max(complete_seqs_scores))
+        i = complete_seqs_scores.index(max(complete_seqs_scores))               # scores用来找到最大得分的句子，作为最终结果
         seq = complete_seqs[i]
 
         # References
@@ -191,14 +167,15 @@ def evaluate(beam_size, encoder, decoder, transform, word_map, rev_word_map):
             map(lambda c: [w for w in c if w not in {word_map['<start>'], word_map['<end>'], word_map['<pad>']}],
                 img_caps))  # remove <start> and pads
         references.append(img_captions)
-        
+
         # Hypotheses
         hypotheses.append([w for w in seq if w not in {word_map['<start>'], word_map['<end>'], word_map['<pad>']}])
-        
+
         assert len(references) == len(hypotheses)
-        
+
         ref = list(
-            map(lambda c: [rev_word_map[w] for w in c if w not in {word_map['<start>'], word_map['<end>'], word_map['<pad>']}],
+            map(lambda c: [rev_word_map[w] for w in c if
+                           w not in {word_map['<start>'], word_map['<end>'], word_map['<pad>']}],
                 img_caps))
         hyp = [rev_word_map[w] for w in seq if w not in {word_map['<start>'], word_map['<end>'], word_map['<pad>']}]
         for r in ref:
@@ -207,7 +184,7 @@ def evaluate(beam_size, encoder, decoder, transform, word_map, rev_word_map):
     # Calculate BLEU-4 scores
     bleu4 = corpus_bleu(references, hypotheses)
 
-    return bleu4, meteor/25000
+    return bleu4, meteor / 25000
 
 
 if __name__ == '__main__':

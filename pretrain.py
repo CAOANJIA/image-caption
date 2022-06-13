@@ -35,9 +35,9 @@ def main(args):
 
     encoder_optimizer = None  # 不fine-tune VGG
     decoder_optimizer = opt.Adam(params=filter(lambda p: p.requires_grad, decoder.parameters()), lr=args.decoder_lr)
-    
+
     decoder_lr = args.decoder_lr
-    
+
     criterion = nn.CrossEntropyLoss().to(device)
 
     transform = transforms.Compose([
@@ -56,10 +56,10 @@ def main(args):
     for epoch in range(args.epochs):
         if epoch == 5:
             decoder_optimizer = opt.Adam(params=filter(lambda p: p.requires_grad, decoder.parameters()),
-                                         lr=args.decoder_lr/2)
+                                         lr=args.decoder_lr / 2)
         if epoch == 8:
             decoder_optimizer = opt.Adam(params=filter(lambda p: p.requires_grad, decoder.parameters()),
-                                         lr=args.decoder_lr/4)
+                                         lr=args.decoder_lr / 4)
         train(train_loader, encoder, decoder, encoder_optimizer, decoder_optimizer, criterion, epoch, args.print_step)
         bleu_4 = val(val_loader, encoder, decoder, criterion, args.print_step, word_map)
         is_best = bleu_4 > best_bleu4
@@ -73,24 +73,24 @@ def train(train_loader, encoder, decoder, encoder_optimizer, decoder_optimizer, 
     decoder.train()
     start_time = time.time()
     for i, (images, captions, lens) in enumerate(train_loader):
-        images = images.to(device)
-        captions = captions.to(device)
-        lens = lens.to(device)
+        images = images.to(device)          # [64, 3, 224, 224]
+        captions = captions.to(device)      # [64, max_len_t]
+        lens = lens.to(device)              # [64, 1]
 
-        images = encoder(images)
+        images = encoder(images)            # [64, 14, 14, 512]
         predictions, alphas, caps_sorted, decode_lens, sort_ind = decoder(images, captions, lens)
 
-        targets = caps_sorted[:, 1:]
+        targets = caps_sorted[:, 1:]        # pred: [batch_size, max_len-1, vocab_size], tar: [batch_size, max_len_t-1]
 
         # predictions, _ = pack_padded_sequence(predictions, decode_lens, batch_first=True)
         # targets, _ = pack_padded_sequence(targets, decode_lens, batch_first=True)
 
         predictions = pack_padded_sequence(predictions, decode_lens, batch_first=True)[0]
 
-        targets = pack_padded_sequence(targets, decode_lens, batch_first=True)[0]  # pytorch1.1.0后只能这样，不然报错
+        targets = pack_padded_sequence(targets, decode_lens, batch_first=True)[0]   # pytorch1.1.0后只能这样，不然报错
 
-        loss = criterion(predictions, targets)
-        loss += args.lbd * ((1. - alphas.sum(dim=1)) ** 2).mean()  # 双重随机注意力 正则化
+        loss = criterion(predictions, targets)                                      # [b_new, vocab_size], [b_new]
+        loss += args.lbd * ((1. - alphas.sum(dim=1)) ** 2).mean()                   # 双重随机注意力正则化 对时间步维度求和 靠近1
 
         decoder_optimizer.zero_grad()
         if encoder_optimizer is not None:
@@ -120,10 +120,10 @@ def val(val_loader, encoder, decoder, criterion, print_step, word_map):
     start_time = time.time()
     with torch.no_grad():
         for i, (images, captions, lens, all_caps) in enumerate(val_loader):
-            images = images.to(device)
-            captions = captions.to(device)
-            lens = lens.to(device)
-            all_caps = all_caps.to(device)
+            images = images.to(device)          # [b, 3, 224, 224]
+            captions = captions.to(device)      # [b, max_len_t]
+            lens = lens.to(device)              # [b, 1]
+            all_caps = all_caps.to(device)      # [b, 5, max_len_t]
 
             images = encoder(images)
             predictions, alphas, caps_sorted, decode_lens, sort_ind = decoder(images, captions, lens)
@@ -143,22 +143,22 @@ def val(val_loader, encoder, decoder, criterion, print_step, word_map):
                 start_time = time.time()
 
             # References
-            all_caps = all_caps[sort_ind]  # because images were sorted in the decoder
+            all_caps = all_caps[sort_ind]                       # because images were sorted in the decoder
             for j in range(all_caps.shape[0]):
-                img_caps = all_caps[j].tolist()
-                img_captions = list(
+                img_caps = all_caps[j].tolist()                 # [5, max_len_t]
+                img_captions = list(                            # map函数 不改变原列表 返回新的列表
                     map(lambda c: [w for w in c if w not in {word_map['<start>'], word_map['<pad>']}],
-                        img_caps))  # remove <start> and pads
+                        img_caps))                              # remove <start> and pads
                 references.append(img_captions)
 
             # Hypotheses
-            _, preds = torch.max(predictions_copy, dim=2)
+            _, preds = torch.max(predictions_copy, dim=2)       # [b, max_len-1]
             preds = preds.tolist()
             temp_preds = list()
             for j, p in enumerate(preds):
-                temp_preds.append(preds[j][:decode_lens[j]])  # remove pads
+                temp_preds.append(preds[j][:decode_lens[j]])    # remove pads
             preds = temp_preds
-            hypotheses.extend(preds)
+            hypotheses.extend(preds)                            # append直接加在最后 extend则是拆掉一层再加在最后
 
             assert len(references) == len(hypotheses)
 
