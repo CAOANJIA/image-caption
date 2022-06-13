@@ -193,31 +193,31 @@
 
 - good examples：
   
-  ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/395.png)
+  ![](img/395.png)
   
   ------
   
   
   
-  ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/10693.png)
+  ![](img/10693.png)
   
   ------
   
   
   
-  ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/164005.png)
+  ![](img/164005.png)
   
   ------
   
   
   
-  ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/166995.png)
+  ![](img/166995.png)
   
   
   
 - bad examples：
   
-  ![](https://github.com/CAOANJIA/show-attend-and-tell/blob/master/img/194306.png)
+  ![](img/194306.png)
 
 
 
