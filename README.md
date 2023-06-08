@@ -58,7 +58,7 @@
 
 - 优化器  
   
-    ``Adam``，对于decoder我将前5个Epoch的``lr``设为``5e-4``，中间3个Epoch的``lr``设为``(5e-4)/2`` ，最后2个Epoch的``lr``设为``(5e-4)/4``  。
+    ``Adam``，对于decoder将前5个Epoch的``lr``设为``5e-4``，中间3个Epoch的``lr``设为``(5e-4)/2`` ，最后2个Epoch的``lr``设为``(5e-4)/4``  。
     
 - 损失函数
   
@@ -74,7 +74,7 @@
 
 - 其他超参数
   
-    我将预训练轮数设为``10``个``Epoch``，``batch_size``设为``64``，LSTM的``hidden_size``设为``768``，``attention dim``设为``512``，``word embedding``维度设为``256``，``dropout``设为``0.5``。
+    将预训练轮数设为``10``个``Epoch``，``batch_size``设为``64``，LSTM的``hidden_size``设为``768``，``attention dim``设为``512``，``word embedding``维度设为``256``，``dropout``设为``0.5``。
     
 - 训练时间
   
@@ -92,7 +92,7 @@
   
   2. 若不fine-tune，必须将encoder的所有参数的``requires_grad``设为False。
   
-  3. 一开始我尝试了多种lr并尝试微调``VGG``，训练效果不佳，我猜测是因为简单地resize图像至``3x224x224``，因此我利用``PIL.Image``对图像重新预处理（利用``crop``和``ANTIALIAS``）。
+  3. 一开始尝试了多种lr并尝试微调``VGG``，训练效果不佳，猜测是因为简单地resize图像至``3x224x224``，因此利用``PIL.Image``对图像重新预处理（利用``crop``和``ANTIALIAS``）。
 
 ### Fine-tune
 
@@ -106,11 +106,11 @@
   
   *E0: 23.15;  E1: 23.60;  E2: 23.65;  E3: 23.82;  **E4: 23.89**;  **E5: 23.93***
   
-  可以看到，模型得分上升趋势减缓，E4到E5的提升很小，为了防止过拟合，我选择E4对应的模型。
+  可以看到，模型得分上升趋势减缓，E4到E5的提升很小，为了防止过拟合，选择E4对应的模型。
   
 - 其余参数
   
-    我将微调轮数设为6个Epoch，``batch_size``设为``32``，其余与预训练相同。
+    将微调轮数设为6个Epoch，``batch_size``设为``32``，其余与预训练相同。
     
 - 训练时间
   
@@ -118,7 +118,7 @@
     
 - NOTE: 
   
-  可以看到，经过6个Epoch，验证集BLEU4分数仍然呈现上升趋势，但趋势减缓严重，因此为了防止过拟合，我不再进行训练，经过比较，模型E4的确表现比E5好，验证了我的想法。
+  可以看到，经过6个Epoch，验证集BLEU4分数仍然呈现上升趋势，但趋势减缓严重，因此为了防止过拟合，不再进行训练，经过比较，模型E4的确表现比E5好，验证了的想法。
 
 ### Evaluation <a name="eval"></a>
 
@@ -142,7 +142,7 @@
   |:-----:|:------:|
   | 24.3  | 23.90  |
 
-- 我的模型得分
+- 的模型得分
 
   <table align="center">
       <tr>    <th rowspan="2">beam_size</th>    <th colspan="2" align="center">BLEU4</th>    <th colspan="2" align="center">METEOR</th>	</tr>
@@ -221,13 +221,13 @@
 
 ## 结果 <a name="summary"></a>
 
-- 在不微调Encoder的情况下模型在测试集上的BLEU4得分高于原论文，这可能是因为我采用了``scaled-dot-product attention``，并对数据做了简单的预处理。
+- 在不微调Encoder的情况下模型在测试集上的BLEU4得分高于原论文。
 
 - 在微调Encoder后模型得分普遍更高。
 
 - 无论是否微调，``beam_size``增加时BLEU分数先增加再减小,1到2时分数提升较明显，在3时达到最高（不微调达到30.31，微调达到32.18），在4到5时变得不稳定。
 
-- 值得注意的是，虽然模型在验证集上以``teacher forcing``生成的文本BLEU4分数并不算高，但是在测试集上以``autoregression``生成的表现却令人满意。
+- 虽然模型在验证集上以``teacher forcing``生成的文本BLEU4分数并不算高，但是在测试集上以``autoregression``生成的表现却令人满意。
 
 
 
